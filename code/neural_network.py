@@ -6,7 +6,9 @@ Created on Wed Nov 16 16:21:05 2016
 """
 
 class ANN(object):
-    def __init__(self, weights_layer1, weights_layer2):
+    def __init__(self, weights):
+        # weights is a list of matrices weights = [matrix_layer1, matrix_layer2,...]
+
         pass
     
     def feed_forward(self, input_vector):

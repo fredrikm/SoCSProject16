@@ -14,10 +14,11 @@ from sensor_module import VisibilitySensor
 from fsm_module import Predator_FSM
 
 
-def simulate(nbr_fish, nbr_predators, boundaries, nbr_of_iteraions = -1):
+def simulate(nbr_fish, nbr_predators, boundaries, ann_weights, nbr_of_iteraions = -1):
+    # ann_weights is a list of matrices  ann_weights = [matrix_layer1, matrix_layer2,...]
     
     delta_t = 0.1
-    environment = Environment(nbr_fish, nbr_predators,boundaries)
+    environment = Environment(nbr_fish, nbr_predators, boundaries, ann_weights)
     i = 0
     while nbr_of_iteraions ==-1 or i<nbr_of_iteraions:
         for fish in environment.fish_lst:
@@ -32,13 +33,17 @@ def simulate(nbr_fish, nbr_predators, boundaries, nbr_of_iteraions = -1):
         present(environment)
         i += 1
         sleep(2)
-        
+    
+    
+    #TODO calculate fitness score
+    fitness = -1
+    return fitness
         
 
 class Environment(object):
-    def __init__(self, nbr_fish, nbr_predators, boundaries):
+    def __init__(self, nbr_fish, nbr_predators, boundaries, ann_weights):
         sensor = VisibilitySensor(self)
-        ann = ANN(np.array([0,0]),np.array([0,0]))
+        ann = ANN(ann_weights)
         fsm = Predator_FSM(self)
         position = np.array([0,0])
         velocity = np.array([0,0])
@@ -54,4 +59,6 @@ class Environment(object):
 def present(environment):
     print(environment)
 
-simulate(10,1,[0,10,0,10], 3)
+
+if __name__ == "__main__":
+    simulate(10,1,[0,10,0,10], [np.array([0,0]), np.array([0,0])], 3)

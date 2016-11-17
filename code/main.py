@@ -52,8 +52,8 @@ class Environment(object):
         self.predator_lst = [Predator(position, velocity, i, self, sensor, fsm) for i in range(nbr_predators)]
         self.boundaries = boundaries
     
-    def __to_string__():
-        pass
+    def __str__(self):
+        return "Environment object"
         
         
 def present(environment):

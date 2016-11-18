@@ -42,11 +42,12 @@ frame_advance(delta_time):
 
     
 class Fish(object):
-    def  __init__(self, position, velocity, fish_id, environment, sensor, ann, image, sprite_batch):
+    def  __init__(self, position, velocity, fish_id, environment, sensor, ann, image = None, sprite_batch = None):
         self.position = position
         self.velocity = velocity
-        self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
-        self.sprite.scale = 0.5
+        if not (image is None):
+            self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
+            self.sprite.scale = 0.5
     """
     self.sensor = Sensor(self.environment)
     self.ann = ANN()
@@ -76,10 +77,12 @@ class Fish(object):
         self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.1
         self.velocity = mu.normalize(self.velocity)
         self.position += self.velocity * delta_time * 20
-
-        self.sprite.rotation = mu.dir_to_angle(self.velocity)
-        self.sprite.set_position(self.position[0], self.position[1])
-
+        
+        try:
+            self.sprite.rotation = mu.dir_to_angle(self.velocity)
+            self.sprite.set_position(self.position[0], self.position[1])
+        except AttributeError: # Then the fish has no sprite
+            pass
         #check for collisions, add repelleing forces
  
         

@@ -33,10 +33,8 @@ def simulate(nbr_fish, nbr_predators, boundaries, ann_weights, nbr_of_iteraions 
         for predator in environment.predator_lst:
             predator.advance(delta_t)
         
-        present(environment)
         i += 1
-        sleep(2)
-    
+        print(environment)
     
     #TODO calculate fitness score
     fitness = -1
@@ -47,19 +45,22 @@ class Environment(object):
 
     #sprite_batch_fishes = pyglet.graphics.Batch()
 
-    def __init__(self, nbr_fish, nbr_predators, boundaries, ann_weights):
+    def __init__(self, nbr_fish, nbr_predators, boundaries, ann_weights, graphics_on = False):
         sensor = VisibilitySensor(self)
         ann = ANN(ann_weights)
         fsm = Predator_FSM(self)
         position = np.array([0,0])
         velocity = np.array([0,0])
 
-        # sprites
-        fish_image = pyglet.resource.image("fish.png")
-        self.center_image(fish_image)
-
-        # sprite batches for performance
-        self.sprite_batch_fishes = pyglet.graphics.Batch()
+        if graphics_on:
+            # sprites
+            fish_image = pyglet.resource.image("fish.png")
+            self.center_image(fish_image)
+            # sprite batches for performance
+            self.sprite_batch_fishes = pyglet.graphics.Batch()
+        else:
+            fish_image = None
+            self.sprite_batch_fishes = None
         
         # Initialize fishes
         self.fish_lst = []
@@ -98,7 +99,7 @@ if __name__ == "__main__":
     boundaries = [0, window.width, 0, window.height]
     ann_weights = [np.array([0,0]), np.array([0,0])]
 
-    environment = Environment(nbr_fish, nbr_predators, boundaries, ann_weights)
+    environment = Environment(nbr_fish, nbr_predators, boundaries, ann_weights, graphics_on = True)
 
     # runs once per frame
     def update(dt):
@@ -127,6 +128,7 @@ if __name__ == "__main__":
 
     pyglet.clock.schedule_interval(update, 1/120.0)
     pyglet.app.run()
-    #simulate(10,1,[0,10,0,10], [np.array([0,0]), np.array([0,0])], 3)
+   
+    #simulate(10,1,[0,10,0,10], [np.array([0,0]), np.array([0,0])], 100)
 
   

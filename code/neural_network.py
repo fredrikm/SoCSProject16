@@ -29,7 +29,7 @@ class ANN(object):
         
         
         
-class TestStringMethods(unittest.TestCase):
+class TestANN(unittest.TestCase):
 
     def test_immutability(self):
         original_value = 1.5
@@ -86,7 +86,6 @@ class TestStringMethods(unittest.TestCase):
         else:
             assertion_error_raised = False
         self.assertTrue(assertion_error_raised)
-
 
 
 if __name__ == '__main__':

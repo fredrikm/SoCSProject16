@@ -7,6 +7,8 @@ Created on Wed Nov 16 12:36:08 2016
 
 from abc import ABCMeta, abstractmethod, abstractproperty
 
+from sensor_module import _check_visibility_disk_util
+
 """ Interface for fish
 
 --- Variables ---
@@ -57,6 +59,9 @@ class Fish(object):
     
 
     def think(self): # Can NOT change global system state
+    
+        self.visible_fish, self.visibe_predators = _check_visibility_disk_util(self.environment.fish_lst, 
+                                                   radius, field_of_view)
         pass
         """        sensor_output = self.sensor(self.fish_index)
         action = self.control(sensor_output)

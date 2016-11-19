@@ -17,3 +17,20 @@ def normalize(v):
     if norm == 0: 
         return np.array([1,0])
     return v/norm
+
+# checks if other agent is visible to agent
+def is_visible(agent, other_agent, radius, field_of_view = -1):
+    if agent == other_agent:
+        return False
+    distance = np.linalg.norm(other_agent.position-agent.position)
+    if distance <= radius:
+        if field_of_view == -1: #No limitation on field of view
+            return True
+        else:
+            normalized_agent_vel = normalize(agent.velocity)
+            normalized_other_pos = normalize(other_agent.position)                
+            angle = float(np.arccos(np.transpose(normalized_agent_vel) @ normalized_other_pos))
+            if angle <= field_of_view:
+                return True
+    return False
+            

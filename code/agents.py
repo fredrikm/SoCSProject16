@@ -63,19 +63,26 @@ class Fish(object):
     """
     
 
-    def think(self): # Can NOT change global system state
-    
-        self.visible_fish, self.visibe_predators = _check_visibility_disk_util(self.environment.fish_lst, 
-                                                   radius, field_of_view)
-        pass
+    def think(self): # Can NOT change global system state, nor the pos./vel. of self
         
-        """        sensor_output = self.sensor(self.fish_index)
-        action = self.control(sensor_output)
+        # Check what's around
+        self.visible_fish = [mu.is_visible(self, other_fish, self.visiblity_radius) for other_fish in self.environment.fish_lst]
+        self.visible_predators = [mu.is_visible(self, predator, self.visiblity_radius) for predator in self.environment.predator_lst]
         
-        if turn right:
-            rotate velocity +5degrees
-            ....
-        """     
+        # run sensor
+        #sensor_output = self.sensor(self.fish_index)
+        
+        #determine action
+        #action = self.control(sensor_output)
+
+        #execute action        
+        #if turn right:
+        #    rotate velocity +5degrees
+        #    ....
+
+
+
+
     def advance(self, delta_time):
         # hacked in so we get something moving/rotating
         self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.1
@@ -88,6 +95,8 @@ class Fish(object):
         except AttributeError: # Then the fish has no sprite
             pass
         #check for collisions, add repelleing forces
+        # Use self.visible_fish to get potential collisions so that we don't have
+        # to run the costly search more than once
  
         
     

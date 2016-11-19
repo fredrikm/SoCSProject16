@@ -18,6 +18,18 @@ def normalize(v):
         return np.array([1,0])
     return v/norm
 
+# Calulate angle between to row vectors
+def calculate_angle2D(u,v):
+    v = normalize(u)
+    u = normalize(v)
+    return float(np.arccos(np.transpose(u) @ v))
+
+# Calulate directed angle from u to v
+def directed_angle2D(u,v):
+    u = normalize(u)
+    v = normalize(v)
+    return math.atan2(v[1], v[0]) - math.atan2(u[1], u[0])
+
 # checks if other agent is visible to agent
 def is_visible(agent, other_agent, radius, field_of_view = -1):
     if agent == other_agent:
@@ -26,10 +38,8 @@ def is_visible(agent, other_agent, radius, field_of_view = -1):
     if distance <= radius:
         if field_of_view == -1: #No limitation on field of view
             return True
-        else:
-            normalized_agent_vel = normalize(agent.velocity)
-            normalized_other_pos = normalize(other_agent.position)                
-            angle = float(np.arccos(np.transpose(normalized_agent_vel) @ normalized_other_pos))
+        else:                
+            angle = calculate_angle2D(agent.velocity, other_agent.position)
             if angle <= field_of_view:
                 return True
     return False

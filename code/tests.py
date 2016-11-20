@@ -18,6 +18,7 @@ class TestFishNeigbourhood(unittest.TestCase):
         fishA = environment.fish_lst[0]
         fishA.position = np.array([[0],[0]])
         fishA.velocity = np.array([[1],[0]])
+        fishA.neighbourhood_radius = 2
         fishB = environment.fish_lst[1]
         fishB.position = np.array([[0],[0.5]])       
         fishA.think()
@@ -29,6 +30,7 @@ class TestFishNeigbourhood(unittest.TestCase):
         fish = environment.fish_lst[0]
         fish.position = np.array([[0],[0]])
         fish.velocity = np.array([[1],[0]])
+        fish.neighbourhood_radius = 2
         predator = environment.predator_lst[0]
         predator.position = np.array([[0],[0.5]])       
         fish.think()
@@ -40,6 +42,7 @@ class TestFishNeigbourhood(unittest.TestCase):
         fishA = environment.fish_lst[0]
         fishA.position = np.array([[0],[0]])
         fishA.velocity = np.array([[1],[0]])
+        fishA.neighbourhood_radius = 2
         fishB = environment.fish_lst[1]
         fishB.position = np.array([[0],[2.01]])       
         fishA.think()

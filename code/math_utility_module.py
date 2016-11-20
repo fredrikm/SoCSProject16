@@ -30,8 +30,8 @@ def directed_angle2D(u,v):
     v = normalize(v)
     return math.atan2(v[1], v[0]) - math.atan2(u[1], u[0])
 
-# checks if other agent is visible to agent
-def is_visible(agent, other_agent, radius, field_of_view = -1):
+# checks if other agent is neighbour to agent
+def is_neighbour(agent, other_agent, radius, field_of_view = -1):
     if agent == other_agent:
         return False
     distance = np.linalg.norm(other_agent.position-agent.position)

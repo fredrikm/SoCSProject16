@@ -9,9 +9,8 @@ import numpy as np
 import math
 from copy import deepcopy
 
-from sensor_module import _check_visibility_disk_util
 import math_utility_module as mu
-
+from sensor_module import RetinaSensor
 """ Interface for fish
 
 --- Variables ---
@@ -43,9 +42,14 @@ frame_advance(delta_time):
 
     
 class Fish(object):
-    def  __init__(self, position, velocity, fish_id, environment, sensor, ann, image = None, sprite_batch = None):
+    def  __init__(self, position, velocity, fish_id, environment, ann, image = None, sprite_batch = None):
         self.position = deepcopy(position)
         self.velocity = deepcopy(velocity)
+        self.environment = environment
+        self.neighbourhood_radius = 2
+        nbr_retina_cells = 4
+        sensor_radius = 2
+        self.sensor = RetinaSensor(environment, self, nbr_retina_cells, sensor_radius)
         if not (image is None):
             self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
             self.sprite.scale = 0.5
@@ -66,8 +70,8 @@ class Fish(object):
     def think(self): # Can NOT change global system state, nor the pos./vel. of self
         
         # Check what's around
-        self.visible_fish = [mu.is_visible(self, other_fish, self.visiblity_radius) for other_fish in self.environment.fish_lst]
-        self.visible_predators = [mu.is_visible(self, predator, self.visiblity_radius) for predator in self.environment.predator_lst]
+        self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.neighbourhood_radius)]
+        self.neighbouring_predators = [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.neighbourhood_radius)]
         
         # run sensor
         #sensor_output = self.sensor(self.fish_index)
@@ -102,8 +106,8 @@ class Fish(object):
     
 
 class Predator(object):
-    def  __init__(self, position, velocity, predator_id, environment, sensor, fsm):
-        pass
+    def  __init__(self, position, velocity, predator_id, environment):
+        self.position = position
         """
         self.sensor = Sensor(broken, fuzzy,...)
         self.ann = ANN()

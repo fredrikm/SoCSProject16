@@ -8,7 +8,7 @@ Created on Wed Nov 16 16:32:21 2016
 class Predator_FSM(object):
     
     
-    def __init__(self, predator, environment, visibility):
+    def __init__(self, predator, environment):
         self.predator = predator
         self.environment = environment
         self.state = "search"
@@ -16,6 +16,4 @@ class Predator_FSM(object):
     
     
     def next_action():
-        
-        
-        
+        pass

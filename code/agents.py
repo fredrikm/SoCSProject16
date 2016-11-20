@@ -7,7 +7,7 @@ Created on Wed Nov 16 12:36:08 2016
 import pyglet
 import numpy as np
 import math
-from abc import ABCMeta, abstractmethod, abstractproperty
+from copy import deepcopy
 
 from sensor_module import _check_visibility_disk_util
 import math_utility_module as mu
@@ -44,8 +44,8 @@ frame_advance(delta_time):
     
 class Fish(object):
     def  __init__(self, position, velocity, fish_id, environment, sensor, ann, image = None, sprite_batch = None):
-        self.position = position
-        self.velocity = velocity
+        self.position = deepcopy(position)
+        self.velocity = deepcopy(velocity)
         if not (image is None):
             self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
             self.sprite.scale = 0.5

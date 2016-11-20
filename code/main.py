@@ -55,6 +55,7 @@ class Environment(object):
             # sprites
             fish_image = pyglet.resource.image("orange_fish.png")
             predator_image = pyglet.resource.image("shark.jpg")
+            self.dead_fish_image = pyglet.resource.image("dead_fish.png")
             self.center_image(fish_image)
             # sprite batches for performance
             self.sprite_batch_fishes = pyglet.graphics.Batch()
@@ -112,6 +113,8 @@ if __name__ == "__main__":
         
         for fish in environment.fish_lst:
             fish.think()
+            if fish.neighbouring_predators != [] and fish.sprite.image != environment.dead_fish_image:
+                fish.sprite.image = environment.dead_fish_image
         for predator in environment.predator_lst:
             predator.think()
         for fish in environment.fish_lst:

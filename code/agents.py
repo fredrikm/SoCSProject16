@@ -46,10 +46,9 @@ class Fish(object):
         self.position = deepcopy(position)
         self.velocity = deepcopy(velocity)
         self.environment = environment
-        self.neighbourhood_radius = 50
+        self.neighbourhood_radius = 100
         nbr_retina_cells = 4
-        sensor_radius = 50
-        self.sensor = RetinaSensor(environment, self, nbr_retina_cells, sensor_radius)
+        self.sensor = RetinaSensor(environment, self, nbr_retina_cells)
         if not (image is None):
             self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
             self.sprite.scale = 0.5
@@ -72,7 +71,8 @@ class Fish(object):
         # Check what's around
         self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.neighbourhood_radius)]
         self.neighbouring_predators = [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.neighbourhood_radius)]
-        
+
+
         # run sensor
         friendly_sensor_output = self.sensor.read_fish()
         hostile_sensor_output = self.sensor.read_fish()
@@ -95,7 +95,7 @@ class Fish(object):
 
     def advance(self, delta_time):
         # hacked in so we get something moving/rotating
-        self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.01
+        self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.1
         self.velocity = mu.normalize(self.velocity)
         self.position += self.velocity * delta_time * 20
         

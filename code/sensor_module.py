@@ -23,14 +23,14 @@ class RetinaCell(object):
 
 
 class RetinaSensor(object):
-    def __init__(self, environment, agent, nbr_cells, radius, field_of_view = -1):
+    def __init__(self, environment, agent, nbr_cells, radius = -1, field_of_view = -1):
         assert nbr_cells%2 == 0, "There must be an even number of cells!"
         self.environment = environment
         self.agent = agent
         self._nbr_cells = nbr_cells
         self._cell_width = np.pi/(nbr_cells/2)
         self._retina_cells = [RetinaCell() for i in range(nbr_cells)]
-        self._radius = radius
+        self._radius = radius# placeholder for future sensor limitation
         self._field_of_view = field_of_view # placeholder for future sensor limitation
         
         tmp = [i*np.pi/nbr_cells for i in range(-nbr_cells,nbr_cells)]

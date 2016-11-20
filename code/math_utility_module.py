@@ -20,8 +20,8 @@ def normalize(v):
 
 # Calulate angle between to row vectors
 def calculate_angle2D(u,v):
-    v = normalize(u)
-    u = normalize(v)
+    v = normalize(v)
+    u = normalize(u)
     return float(np.arccos(np.transpose(u) @ v))
 
 # Calulate directed angle from u to v

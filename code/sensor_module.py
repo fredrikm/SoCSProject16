@@ -10,7 +10,6 @@ import math
 import math_utility_module as mu
 
 
-
 class RetinaCell(object):
     def __init__(self):
         self.agents_in_sight = []
@@ -23,7 +22,7 @@ class RetinaCell(object):
         self.agents_in_sight = []
 
 
-class RetinaSensor(object): # Looks for fish
+class RetinaSensor(object):
     def __init__(self, environment, agent, nbr_cells):
         assert nbr_cells%2 == 0, "There must be an even number of cells!"
         self.environment = environment

@@ -57,6 +57,8 @@ class Environment(object):
             predator_image = pyglet.resource.image("shark.jpg")
             self.dead_fish_image = pyglet.resource.image("dead_fish.png")
             self.center_image(fish_image)
+            self.center_image(predator_image)
+            self.center_image(self.dead_fish_image)
             # sprite batches for performance
             self.sprite_batch_fishes = pyglet.graphics.Batch()
             self.sprite_batch_predators = pyglet.graphics.Batch()

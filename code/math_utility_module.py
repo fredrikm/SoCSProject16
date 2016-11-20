@@ -28,7 +28,11 @@ def calculate_angle2D(u,v):
 def directed_angle2D(u,v):
     u = normalize(u)
     v = normalize(v)
-    return math.atan2(v[1], v[0]) - math.atan2(u[1], u[0])
+    angle = math.atan2(v[1], v[0]) - math.atan2(u[1], u[0])
+    if angle%np.pi == 0:
+        return abs(angle)%(2*np.pi)*np.sign(angle)
+    else:
+        return abs(angle)%np.pi*np.sign(angle)
 
 # checks if other agent is neighbour to agent
 def is_neighbour(agent, other_agent, radius, field_of_view = -1):

@@ -46,9 +46,9 @@ class Fish(object):
         self.position = deepcopy(position)
         self.velocity = deepcopy(velocity)
         self.environment = environment
-        self.neighbourhood_radius = 2
+        self.neighbourhood_radius = 50
         nbr_retina_cells = 4
-        sensor_radius = 2
+        sensor_radius = 50
         self.sensor = RetinaSensor(environment, self, nbr_retina_cells, sensor_radius)
         if not (image is None):
             self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
@@ -74,8 +74,14 @@ class Fish(object):
         self.neighbouring_predators = [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.neighbourhood_radius)]
         
         # run sensor
-        #sensor_output = self.sensor(self.fish_index)
+        friendly_sensor_output = self.sensor.read_fish()
+        hostile_sensor_output = self.sensor.read_fish()
         
+        #if sum(hostile_sensor_output) != 0:
+            #print('Help,shark!')
+            #print(self.position)
+            #R = np.array([[0,-1],[1,0]]) * np.sign(sum(hostile_sensor_output))
+            #self.velocity = R @ self.velocity 
         #determine action
         #action = self.control(sensor_output)
 
@@ -89,7 +95,7 @@ class Fish(object):
 
     def advance(self, delta_time):
         # hacked in so we get something moving/rotating
-        self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.1
+        self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.01
         self.velocity = mu.normalize(self.velocity)
         self.position += self.velocity * delta_time * 20
         
@@ -106,8 +112,12 @@ class Fish(object):
     
 
 class Predator(object):
-    def  __init__(self, position, velocity, predator_id, environment):
+    def  __init__(self, position, velocity, predator_id, environment, image = None, sprite_batch = None):
         self.position = position
+        self.velocity = velocity
+        if not (image is None):
+            self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
+            self.sprite.scale = 0.5
         """
         self.sensor = Sensor(broken, fuzzy,...)
         self.ann = ANN()
@@ -129,8 +139,16 @@ class Predator(object):
         action = self.fsm(sensor_output)
        """ 
     def advance(self, delta_time):
-        pass
+        # hacked in so we get something moving/rotating
+        self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.01
+        self.velocity = mu.normalize(self.velocity)
+        self.position += self.velocity * delta_time * 20
         
+        try:
+            self.sprite.rotation = mu.dir_to_angle(self.velocity)
+            self.sprite.set_position(self.position[0], self.position[1])
+        except AttributeError: # Then the fish has no sprite
+            pass
 
         
     

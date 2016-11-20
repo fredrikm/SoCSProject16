@@ -48,18 +48,23 @@ class Environment(object):
     def __init__(self, nbr_fish, nbr_predators, boundaries, ann_weights, graphics_on = False):
         ann = ANN(ann_weights)
         #fsm = Predator_FSM(self)
-        position = np.array([0,0])
-        velocity = np.array([0,0])
+        position = np.array([200.0,200.0])
+        velocity = np.array([0.1,0.1])
 
         if graphics_on:
             # sprites
             fish_image = pyglet.resource.image("orange_fish.png")
+            predator_image = pyglet.resource.image("shark.jpg")
             self.center_image(fish_image)
             # sprite batches for performance
             self.sprite_batch_fishes = pyglet.graphics.Batch()
+            self.sprite_batch_predators = pyglet.graphics.Batch()
+
         else:
             fish_image = None
             self.sprite_batch_fishes = None
+            predator_image = None
+            self.sprite_batch_predators = None
         
         # Initialize fishes
         self.fish_lst = []
@@ -70,8 +75,10 @@ class Environment(object):
             fish = Fish(pos, velocity, i, self, ann, fish_image, self.sprite_batch_fishes)
             self.fish_lst.append(fish)
 
+
         #self.fish_lst = [Fish(position, velocity, i, self, sensor, ann) for i in range(nbr_fish)] # Becomes for loop if we wanr to use different ANN variants for different fish        
-        self.predator_lst = [Predator(position, velocity, i, self) for i in range(nbr_predators)]
+        self.predator_lst = [Predator(position, velocity, i, self, predator_image, self.sprite_batch_predators) for i in range(nbr_predators)]
+        
         self.boundaries = boundaries
     
     def __str__(self):
@@ -93,7 +100,7 @@ if __name__ == "__main__":
 
     fps_display = pyglet.clock.ClockDisplay()
 
-    nbr_fish = 100
+    nbr_fish = 20
     nbr_predators = 1
     boundaries = [0, window.width, 0, window.height]
     ann_weights = [np.array([0,0]), np.array([0,0])]
@@ -119,6 +126,8 @@ if __name__ == "__main__":
         
         # render the spritebatch containing fishes
         environment.sprite_batch_fishes.draw()
+        environment.sprite_batch_predators.draw()
+
 
         fps_display.draw()
         

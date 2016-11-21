@@ -67,11 +67,15 @@ class Fish(object):
     """
 
     def get_fish_forces(self):
-        direction = np.array([0.0, 0.0])
+        f = np.array([0.0, 0.0])
         neighbours = self.get_neighbours()
+        k = self.environment.k
+        power = self.power
         for fish in neighbours:
-            direction += np.abs(fish.position-self.position)
-        f = self.environment.k / direction**self.environment.power
+            print("neihgbour detected at"+str(self.position))
+            f_i = k / np.abs(fish.position-self.position)**power
+            f += f_i
+
         return f
 
     def get_neighbours(self):
@@ -110,7 +114,10 @@ class Fish(object):
     def advance(self, delta_time):
         # hacked in so we get something moving/rotating
         self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.1
+
+#        self.velocity += self.velocity + self.get_fish_forces()
         self.velocity = mu.normalize(self.velocity)
+       
         self.position += self.velocity * delta_time * 20
         x_max = self.environment.boundaries[1]
         y_max = self.environment.boundaries[3]

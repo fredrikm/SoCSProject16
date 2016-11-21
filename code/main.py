@@ -78,6 +78,9 @@ class Environment(object):
             fish = Fish(pos, velocity, i, self, ann, fish_image, self.sprite_batch_fishes)
             self.fish_lst.append(fish)
 
+        # Initialize physical constants of  Coloumb force equation
+        self.k = 1
+        self.power = 6
 
         #self.fish_lst = [Fish(position, velocity, i, self, sensor, ann) for i in range(nbr_fish)] # Becomes for loop if we wanr to use different ANN variants for different fish        
         self.predator_lst = [Predator(position, velocity, i, self, predator_image, self.sprite_batch_predators) for i in range(nbr_predators)]

@@ -45,6 +45,7 @@ class Fish(object):
     def  __init__(self, position, velocity, fish_id, environment, ann, image = None, sprite_batch = None):
         self.position = deepcopy(position)
         self.velocity = deepcopy(velocity)
+        self.mass = 1
         self.environment = environment
         self.neighbourhood_radius = 100
         nbr_retina_cells = 4
@@ -64,13 +65,26 @@ class Fish(object):
     self._time_since_last_ANN_update
     self.fish_index
     """
-    
+
+    def get_fish_forces(self):
+        direction = np.array([0.0, 0.0])
+        neighbours = self.get_neighbours()
+        for fish in neighbours:
+            direction += np.abs(fish.position-self.position)
+        f = self.environment.k / direction**self.environment.power
+        return f
+
+    def get_neighbours(self):
+        return [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.neighbourhood_radius)]
+
+    def get_hostile_neighbors(self):
+        return [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.neighbourhood_radius)]
 
     def think(self): # Can NOT change global system state, nor the pos./vel. of self
         
         # Check what's around
-        self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.neighbourhood_radius)]
-        self.neighbouring_predators = [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.neighbourhood_radius)]
+        self.neighbouring_fish = self.get_neighbours()
+        self.neighbouring_predators = self.get_hostile_neighbors()
 
 
         # run sensor

@@ -115,8 +115,14 @@ if __name__ == "__main__":
         
         for fish in environment.fish_lst:
             fish.think()
-            if fish.neighbouring_predators != [] and fish.sprite.image != environment.dead_fish_image:
+            ## demonstrate neigbour-detection
+            #if fish.neighbouring_predators != [] and fish.sprite.image != environment.dead_fish_image:
+            #    fish.sprite.image = environment.dead_fish_image
+            
+            # demonstrate sensor functionality
+            if sum(fish.sensor.read_predators()) != 0 and fish.sprite.image != environment.dead_fish_image:
                 fish.sprite.image = environment.dead_fish_image
+                
         for predator in environment.predator_lst:
             predator.think()
         for fish in environment.fish_lst:

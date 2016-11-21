@@ -47,6 +47,27 @@ class TestFishNeigbourhood(unittest.TestCase):
         fishB.position = np.array([[0],[2.01]])       
         fishA.think()
         self.assertNotIn(fishB, fishA.neighbouring_fish)
+    def test_periodicity(self):
+        ann_weights = [np.array([0,0]), np.array([0,0])]
+        boundaries =    [0,10,0,10]               
+        environment = Environment(3, 0, [0,10,0,10], ann_weights)
+        fishA = environment.fish_lst[0]
+
+        x_min = boundaries[0]
+        x_max = boundaries[1]
+        y_min = boundaries[2]
+        y_max = boundaries[3]
+
+        for i in range(0,1000):
+            fishA.advance(1)
+            self.assertTrue(fishA.position[0] >= x_min)
+            self.assertTrue(fishA.position[0] <= x_max)
+            self.assertTrue(fishA.position[1] >= y_min)
+            self.assertTrue(fishA.position[1] <= y_max)
+                        
+        
+        
+        
 
 
 class TestFishRetina(unittest.TestCase):

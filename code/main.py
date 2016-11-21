@@ -48,8 +48,8 @@ class Environment(object):
     def __init__(self, nbr_fish, nbr_predators, boundaries, ann_weights, graphics_on = False):
         ann = ANN(ann_weights)
         #fsm = Predator_FSM(self)
-        position = np.array([200.0,200.0])
-        velocity = np.array([0.1,0.1])
+        position = np.array([200.0, 200.0])
+        velocity = np.array([0.1, 0.1])
 
         if graphics_on:
             # sprites

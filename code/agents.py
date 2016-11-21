@@ -114,7 +114,7 @@ class Fish(object):
         self.position += self.velocity * delta_time * 20
         x_max = self.environment.boundaries[1]
         y_max = self.environment.boundaries[3]
-        self.position[0]  = self.position[0] % x_max
+        self.position[0] = self.position[0] % x_max
         self.position[1] = self.position[1]  % y_max
         
         try:

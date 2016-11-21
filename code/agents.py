@@ -98,6 +98,10 @@ class Fish(object):
         self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.1
         self.velocity = mu.normalize(self.velocity)
         self.position += self.velocity * delta_time * 20
+        x_max = self.environment.boundaries[1]
+        y_max = self.environment.boundaries[3]
+        self.position[0]  = self.position[0] % x_max
+        self.position[1] = self.position[1]  % y_max
         
         try:
             self.sprite.rotation = mu.dir_to_angle(self.velocity)

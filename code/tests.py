@@ -48,5 +48,61 @@ class TestFishNeigbourhood(unittest.TestCase):
         fishA.think()
         self.assertNotIn(fishB, fishA.neighbouring_fish)
 
+
+class TestFishRetina(unittest.TestCase):
+    def test_read_fish_secctor0(self):
+        ann_weights = [np.array([0,0]), np.array([0,0])]
+        environment = Environment(2, 0, [0,10,0,10], ann_weights)
+        fishA = environment.fish_lst[0]
+        fishA.position = np.array([[7],[6]])
+        fishA.velocity = np.array([[1],[0]])
+        fishA.neighbourhood_radius = 30
+        fishB = environment.fish_lst[1]
+        fishB.position = np.array([[1],[9]])       
+        fishA.think()
+        sensor_output = fishA.sensor.read_fish()
+        self.assertEqual(sensor_output[0], 1)
+
+    def test_read_fish_secctor1(self):
+        ann_weights = [np.array([0,0]), np.array([0,0])]
+        environment = Environment(2, 0, [0,10,0,10], ann_weights)
+        fishA = environment.fish_lst[0]
+        fishA.position = np.array([[7],[6]])
+        fishA.velocity = np.array([[1],[0]])
+        fishA.neighbourhood_radius = 30
+        fishB = environment.fish_lst[1]
+        fishB.position = np.array([[13],[13]])       
+        fishA.think()
+        sensor_output = fishA.sensor.read_fish()
+        self.assertEqual(sensor_output[1], 1)
+
+    def test_read_fish_secctor2(self):
+        ann_weights = [np.array([0,0]), np.array([0,0])]
+        environment = Environment(2, 0, [0,10,0,10], ann_weights)
+        fishA = environment.fish_lst[0]
+        fishA.position = np.array([[7],[6]])
+        fishA.velocity = np.array([[1],[0]])
+        fishA.neighbourhood_radius = 30
+        fishB = environment.fish_lst[1]
+        fishB.position = np.array([[10],[-2]])       
+        fishA.think()
+        sensor_output = fishA.sensor.read_fish()
+        self.assertEqual(sensor_output[2], 1)
+        
+        
+    def test_read_fish_secctor3(self):
+        ann_weights = [np.array([0,0]), np.array([0,0])]
+        environment = Environment(2, 0, [0,10,0,10], ann_weights)
+        fishA = environment.fish_lst[0]
+        fishA.position = np.array([[7],[6]])
+        fishA.velocity = np.array([[1],[0]])
+        fishA.neighbourhood_radius = 30
+        fishB = environment.fish_lst[1]
+        fishB.position = np.array([[1],[1]])       
+        fishA.think()
+        sensor_output = fishA.sensor.read_fish()
+        self.assertEqual(sensor_output[3], 1)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -47,8 +47,6 @@ class Fish(object):
         self.velocity = deepcopy(velocity)
         self.environment = environment
         self.ann = ann
-        self._calls_since_last_action = 0
-        self.min_calls_between_actions = -1
         self.neighbourhood_radius = 100
         nbr_retina_cells = 4
         self.sensor = RetinaSensor(environment, self, nbr_retina_cells)
@@ -63,28 +61,15 @@ class Fish(object):
         self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.neighbourhood_radius)]
         self.neighbouring_predators = [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.neighbourhood_radius)]
 
-        if self._calls_since_last_action <= self.min_calls_between_actions:
-            ann_output = 0
-        else:
-            # run sensor
-            friendly_sensor_output = self.sensor.read_fish()
-            hostile_sensor_output = self.sensor.read_predators()
-        
-            ann_input = friendly_sensor_output + hostile_sensor_output
-            ann_input = np.reshape(ann_input, [len(ann_input),1])        
-            ann_output = self.ann.feed_forward(ann_input)
+        # run sensor and neural network
+        friendly_sensor_output = self.sensor.read_fish()
+        hostile_sensor_output = self.sensor.read_predators()
+        ann_input = friendly_sensor_output + hostile_sensor_output
+        ann_input = np.reshape(ann_input, [len(ann_input),1])        
+        ann_output = self.ann.feed_forward(ann_input)
  
         # set angular velocity in interval [-pi/2,pi/2] based on ann-output
-        if ann_output > 0.3:
-            self.angular_velocity = float(ann_output-0.3)/0.7*np.pi/2
-            self._calls_since_last_action = 0
-        elif ann_output < -0.3:
-            self.angular_velocity = float(ann_output-0.3)/0.7*np.pi/2
-            self._calls_since_last_action = 0
-        else:
-            self.angular_velocity = 0
-            self._calls_since_last_action += 1              
-
+        self.angular_velocity = float(ann_output)*np.pi/2
 
     def advance(self, delta_time):
         # hacked in so we get something moving/rotating
@@ -109,7 +94,6 @@ class Fish(object):
         # to run the costly search more than once
  
         
-    
 
 class Predator(object):
     def  __init__(self, position, velocity, predator_id, environment, image = None, sprite_batch = None):

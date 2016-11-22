@@ -99,10 +99,15 @@ class Predator(object):
     def  __init__(self, position, velocity, predator_id, environment, image = None, sprite_batch = None):
         self.position = position
         self.velocity = velocity
+        self.environment = environment
         if not (image is None):
             self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
             self.sprite.scale = 0.5
-        """
+        self.neighbourhood_radius = 400
+        nbr_retina_cells = 20
+        self.sensor = RetinaSensor(environment, self, nbr_retina_cells)
+
+    """
         self.sensor = Sensor(broken, fuzzy,...)
         self.ann = ANN()
     # variables
@@ -117,15 +122,32 @@ class Predator(object):
     
 
     def think(self):
-        pass
+        # Check what's around
+        self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.neighbourhood_radius)]
+
+        # run sensor
+        sensor_output = self.sensor.read_fish()
+        
+        nbr_cells = len(sensor_output)
+        tmp = [is_active*(index-nbr_cells/2) for index, is_active in enumerate(sensor_output)]
+        winning_cell = sum(tmp)
+        if winning_cell < -nbr_cells/2:
+            winning_cell = -nbr_cells/2
+        if winning_cell > -nbr_cells/2:
+            winning_cell = nbr_cells/2
+        desired_rotation = winning_cell * np.pi / (nbr_cells/2)
+        self.angular_velocity = desired_rotation
+        
+       
     """
         sensor_output = self.sensor(self.fish_index)
         action = self.fsm(sensor_output)
        """ 
     def advance(self, delta_time):
         # hacked in so we get something moving/rotating
-        self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.01
+        #self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.01
         self.velocity = mu.normalize(self.velocity)
+        self.velocity = mu.rotate_ccw(self.velocity, -self.angular_velocity*delta_time)
         self.position += self.velocity * delta_time * 20
         
         try:

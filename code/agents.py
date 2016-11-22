@@ -75,7 +75,9 @@ class Fish(object):
 
             k = self.environment.k
             power = self.environment.power
-            f_i = k / np.abs(fish.position-self.position)**power
+            magnitude = k / np.linalg.norm(fish.position-self.position)**power
+            direction = self.position-fish.position
+            f_i = magnitude * direction
             f += f_i
 
         return f

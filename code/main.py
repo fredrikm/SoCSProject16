@@ -22,7 +22,6 @@ if __name__ == "__main__":
     settings.nbr_fishes = 50
     settings.nbr_predators = 1
 
-    settings.fish_sprite_scale = 0.5
     settings.fish_nbr_retina_cells = 4
     settings.fish_neighbourhood_radius = 100
     settings.fish_speed = 20 # units per second in direction of velocity

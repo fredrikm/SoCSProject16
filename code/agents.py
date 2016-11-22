@@ -46,9 +46,13 @@ class Fish(object):
         self.position = deepcopy(position)
         self.velocity = deepcopy(velocity)
         self.environment = environment
+        self.ann = ann
+        self._calls_since_last_action = 0
+        self.min_calls_between_actions = 200 
         self.neighbourhood_radius = 100
         nbr_retina_cells = 4
         self.sensor = RetinaSensor(environment, self, nbr_retina_cells)
+        
         if not (image is None):
             self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
             self.sprite.scale = 0.5
@@ -72,11 +76,31 @@ class Fish(object):
         self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.neighbourhood_radius)]
         self.neighbouring_predators = [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.neighbourhood_radius)]
 
-
-        # run sensor
-        friendly_sensor_output = self.sensor.read_fish()
-        hostile_sensor_output = self.sensor.read_fish()
+        if self._calls_since_last_action <= self.min_calls_between_actions:
+            ann_output = 0
+        else:
+            # run sensor
+            friendly_sensor_output = self.sensor.read_fish()
+            hostile_sensor_output = self.sensor.read_predators()
         
+            ann_input = friendly_sensor_output + hostile_sensor_output
+            ann_input = np.reshape(ann_input, [len(ann_input),1])        
+            ann_output = self.ann.feed_forward(ann_input)
+
+        if ann_output > 0.3:
+            # turn right, use rot. matrix to rot. vel.
+            R = np.array([[0, 1],[-1,0]])
+            self.velocity = R @ self.velocity 
+            self._calls_since_last_action = 0
+        elif ann_output < -0.3:
+            # turn left, use rot. matrix to rot. vel.
+            L = np.array([[0,-1],[1,0]])
+            self.velocity = L @ self.velocity 
+            self._calls_since_last_action = 0
+        else:
+            # continue straight
+            self._calls_since_last_action += 1              
+            
         #if sum(hostile_sensor_output) != 0:
             #print('Help,shark!')
             #print(self.position)

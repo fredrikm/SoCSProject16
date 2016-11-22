@@ -17,15 +17,17 @@ from fsm_module import Predator_FSM
 import math_utility_module as mu
 
 
-def simulate(nbr_fish, nbr_predators, boundaries, ann_weights, nbr_of_iteraions = -1):
+def simulate(nbr_fish, nbr_predators, boundaries, ann_weights, delta_t = 0.1, nbr_of_iteraions = -1):
     # ann_weights is a list of matrices  ann_weights = [matrix_layer1, matrix_layer2,...]
     
-    delta_t = 0.1
     environment = Environment(nbr_fish, nbr_predators, boundaries, ann_weights)
     i = 0
     while nbr_of_iteraions ==-1 or i<nbr_of_iteraions:
         for fish in environment.fish_lst:
             fish.think()
+            # placeholder for predator eating fish
+            if sum(fish.sensor.read_predators()) != 0:
+                environment.fish_lst.remove(fish)
         for predator in environment.predator_lst:
             predator.think()
         for fish in environment.fish_lst:
@@ -34,10 +36,10 @@ def simulate(nbr_fish, nbr_predators, boundaries, ann_weights, nbr_of_iteraions 
             predator.advance(delta_t)
         
         i += 1
-        print(environment)
+        #print(str(len(environment.fish_lst)) + " fish in simulation")
     
     #TODO calculate fitness score
-    fitness = -1
+    fitness = len(environment.fish_lst)/nbr_fish
     return fitness
         
 
@@ -103,10 +105,10 @@ if __name__ == "__main__":
 
     fps_display = pyglet.clock.ClockDisplay()
 
-    nbr_fish = 20
+    nbr_fish = 50
     nbr_predators = 1
     boundaries = [0, window.width, 0, window.height]
-    ann_weights = [np.array([0,0]), np.array([0,0])]
+    ann_weights = [0.3*np.ones([4,8]), 0.5*np.ones([1,4])]
 
     environment = Environment(nbr_fish, nbr_predators, boundaries, ann_weights, graphics_on = True)
 
@@ -148,6 +150,11 @@ if __name__ == "__main__":
     pyglet.clock.schedule_interval(update, 1/120.0)
     pyglet.app.run()
    
-    #simulate(10,1,[0,10,0,10], [np.array([0,0]), np.array([0,0])], 100)
-
+    """
+    ann_weights = [0.3*np.ones([4,8]), 0.5*np.ones([1,4])]
+    fitness = simulate(50,1,[0,10,0,10], ann_weights, delta_t = 0.3, nbr_of_iteraions = 1000)
+    print(fitness)
+    """
+    
+    
   

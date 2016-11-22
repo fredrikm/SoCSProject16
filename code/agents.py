@@ -36,7 +36,7 @@ environment (Environment)
 
 --- Methods ---
 think()       Can NOT change global system state
-frame_advance(delta_time):
+advance(delta_time):
 
 """
 
@@ -56,22 +56,9 @@ class Fish(object):
         if not (image is None):
             self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
             self.sprite.scale = 0.5
-    """
-    self.sensor = Sensor(self.environment)
-    self.ann = ANN()
-    # variables
-    self.position #vector np.array
-    self.velocity #vector np.array
-    self.sensor #reference to instance of class Sensor, or sublcasses
-    self.ann # instance of ANN
-    self.environment # reference to global simulation state and variables/constants (include reference to self)
-    self._time_since_last_ANN_update
-    self.fish_index
-    """
     
 
-    def think(self): # Can NOT change global system state, nor the pos./vel. of self
-        
+    def think(self): # Can NOT change global system state, nor the pos./vel. of self       
         # Check what's around
         self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.neighbourhood_radius)]
         self.neighbouring_predators = [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.neighbourhood_radius)]
@@ -86,35 +73,17 @@ class Fish(object):
             ann_input = friendly_sensor_output + hostile_sensor_output
             ann_input = np.reshape(ann_input, [len(ann_input),1])        
             ann_output = self.ann.feed_forward(ann_input)
-
  
         # set angular velocity in interval [-pi/2,pi/2] based on ann-output
         if ann_output > 0.3:
             self.angular_velocity = float(ann_output-0.3)/0.7*np.pi/2
             self._calls_since_last_action = 0
         elif ann_output < -0.3:
-            # turn left, use rot. matrix to rot. vel.
             self.angular_velocity = float(ann_output-0.3)/0.7*np.pi/2
             self._calls_since_last_action = 0
         else:
-            # continue straight
             self.angular_velocity = 0
             self._calls_since_last_action += 1              
-
-       #if sum(hostile_sensor_output) != 0:
-            #print('Help,shark!')
-            #print(self.position)
-            #R = np.array([[0,-1],[1,0]]) * np.sign(sum(hostile_sensor_output))
-            #self.velocity = R @ self.velocity 
-        #determine action
-        #action = self.control(sensor_output)
-
-        #execute action        
-        #if turn right:
-        #    rotate velocity +5degrees
-        #    ....
-
-
 
 
     def advance(self, delta_time):
@@ -180,7 +149,4 @@ class Predator(object):
             self.sprite.set_position(self.position[0], self.position[1])
         except AttributeError: # Then the fish has no sprite
             pass
-
-        
-    
 

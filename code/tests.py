@@ -7,50 +7,67 @@ Created on Sun Nov 20 11:03:48 2016
 import numpy as np
 import unittest
 
-from main import Environment
+from environment_module import Environment, ConfigurationSettings
 from agents import Fish
 
+def create_environment(nbr_fishes, nbr_predators, boundaries, radius):
+    # settings
+    settings = ConfigurationSettings()
+    settings.window_width = boundaries[1]
+    settings.window_height = boundaries[3]
+    settings.nbr_fishes = nbr_fishes
+    settings.nbr_predators = nbr_predators
+
+    settings.fish_sprite_scale = 0.5
+    settings.fish_nbr_retina_cells = 4
+    settings.fish_neighbourhood_radius = radius
+    settings.fish_speed = 20 # units per second in direction of velocity
+
+    settings.predator_speed = 40
+
+    # graphic settings
+    settings.graphics_on = False
+    settings.fish_sprite_scale = 0.5
+    settings.predator_sprite_scale = 0.6
+
+    ann_weights = [np.ones([4,8]), np.ones([1,4])]
+
+    return Environment(settings, ann_weights)
 
 class TestFishNeigbourhood(unittest.TestCase):
     def test_detection_fish(self): # Test that fish within neigbourhood radius is detected
-        ann_weights = [np.ones([4,8]), np.ones([1,4])]
-        environment = Environment(3, 0, [0,10,0,10], ann_weights)
+        #ann_weights = [np.ones([4,8]), np.ones([1,4])]
+        environment = create_environment(3, 0, [0,10,0,10], 2)
         fishA = environment.fish_lst[0]
-        fishA.position = np.array([[0],[0]])
-        fishA.velocity = np.array([[1],[0]])
-        fishA.neighbourhood_radius = 2
+        fishA.position = np.array([0,0])
+        fishA.velocity = np.array([1,0])
         fishB = environment.fish_lst[1]
-        fishB.position = np.array([[0],[0.5]])       
+        fishB.position = np.array([0,0.5])       
         fishA.think()
         self.assertIn(fishB, fishA.neighbouring_fish)
 
     def test_detection_predator(self): # Test that predator within neigbourhood radius is detected
-        ann_weights = [np.ones([4,8]), np.ones([1,4])]
-        environment = Environment(3, 1, [0,10,0,10], ann_weights)
+        environment = create_environment(3, 1, [0,10,0,10], 2)
         fish = environment.fish_lst[0]
-        fish.position = np.array([[0],[0]])
-        fish.velocity = np.array([[1],[0]])
-        fish.neighbourhood_radius = 2
+        fish.position = np.array([0,0])
+        fish.velocity = np.array([1,0])
         predator = environment.predator_lst[0]
-        predator.position = np.array([[0],[0.5]])       
+        predator.position = np.array([0,0.5])       
         fish.think()
         self.assertIn(predator, fish.neighbouring_predators)
 
     def test_rejection(self): # Test that fish outside neigbourhood radius is NOT detected
-        ann_weights = [np.ones([4,8]), np.ones([1,4])]
-        environment = Environment(3, 0, [0,10,0,10], ann_weights)
+        environment = create_environment(3, 0, [0,10,0,10], 2)
         fishA = environment.fish_lst[0]
-        fishA.position = np.array([[0],[0]])
-        fishA.velocity = np.array([[1],[0]])
-        fishA.neighbourhood_radius = 2
+        fishA.position = np.array([0,0])
+        fishA.velocity = np.array([1,0])
         fishB = environment.fish_lst[1]
-        fishB.position = np.array([[0],[2.01]])       
+        fishB.position = np.array([0,2.01])       
         fishA.think()
         self.assertNotIn(fishB, fishA.neighbouring_fish)
     def test_periodicity(self):
-        ann_weights = [np.ones([4,8]), np.ones([1,4])]
         boundaries =    [0,10,0,10]               
-        environment = Environment(3, 0, [0,10,0,10], ann_weights)
+        environment = create_environment(3, 0, [0,10,0,10], 2)
         fishA = environment.fish_lst[0]
 
         x_min = boundaries[0]
@@ -73,12 +90,10 @@ class TestFishNeigbourhood(unittest.TestCase):
 
 class TestFishRetina(unittest.TestCase):
     def test_read_fish_secctor0(self):
-        ann_weights = [np.ones([4,8]), np.ones([1,4])]
-        environment = Environment(2, 0, [0,10,0,10], ann_weights)
+        environment = create_environment(2, 0, [0,10,0,10], 30)
         fishA = environment.fish_lst[0]
         fishA.position = np.array([[7],[6]])
         fishA.velocity = np.array([[1],[0]])
-        fishA.neighbourhood_radius = 30
         fishB = environment.fish_lst[1]
         fishB.position = np.array([[1],[9]])       
         fishA.think()
@@ -86,12 +101,10 @@ class TestFishRetina(unittest.TestCase):
         self.assertEqual(sensor_output[0], 1)
 
     def test_read_fish_secctor1(self):
-        ann_weights = [np.ones([4,8]), np.ones([1,4])]
-        environment = Environment(2, 0, [0,10,0,10], ann_weights)
+        environment = create_environment(2, 0, [0,10,0,10], 30)
         fishA = environment.fish_lst[0]
         fishA.position = np.array([[7],[6]])
         fishA.velocity = np.array([[1],[0]])
-        fishA.neighbourhood_radius = 30
         fishB = environment.fish_lst[1]
         fishB.position = np.array([[13],[13]])       
         fishA.think()
@@ -99,12 +112,10 @@ class TestFishRetina(unittest.TestCase):
         self.assertEqual(sensor_output[1], 1)
 
     def test_read_fish_secctor2(self):
-        ann_weights = [np.ones([4,8]), np.ones([1,4])]
-        environment = Environment(2, 0, [0,10,0,10], ann_weights)
+        environment = create_environment(2, 0, [0,10,0,10], 30)
         fishA = environment.fish_lst[0]
         fishA.position = np.array([[7],[6]])
         fishA.velocity = np.array([[1],[0]])
-        fishA.neighbourhood_radius = 30
         fishB = environment.fish_lst[1]
         fishB.position = np.array([[10],[-2]])       
         fishA.think()
@@ -113,12 +124,10 @@ class TestFishRetina(unittest.TestCase):
         
         
     def test_read_fish_secctor3(self):
-        ann_weights = [np.ones([4,8]), np.ones([1,4])]
-        environment = Environment(2, 0, [0,10,0,10], ann_weights)
+        environment = create_environment(2, 0, [0,10,0,10], 30)
         fishA = environment.fish_lst[0]
         fishA.position = np.array([[7],[6]])
         fishA.velocity = np.array([[1],[0]])
-        fishA.neighbourhood_radius = 30
         fishB = environment.fish_lst[1]
         fishB.position = np.array([[1],[1]])       
         fishA.think()

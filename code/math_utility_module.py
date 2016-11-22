@@ -49,6 +49,8 @@ def is_neighbour(agent, other_agent, radius, field_of_view = -1):
     return False
 
 def rotate_ccw(u,theta): #rotate vector counter clockwise
+    shape = u.shape
     u = np.reshape(u,[2,1])
     R = [[np.cos(theta), -np.sin(theta)],[np.sin(theta), np.cos(theta)]]
-    return R @ u
+    v =  R @ u
+    return np.reshape(v,shape)

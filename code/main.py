@@ -108,7 +108,7 @@ if __name__ == "__main__":
     nbr_fish = 50
     nbr_predators = 1
     boundaries = [0, window.width, 0, window.height]
-    ann_weights = [0.3*np.ones([4,8]), 0.5*np.ones([1,4])]
+    ann_weights = [np.ones([4,8]), np.ones([1,4])]
 
     environment = Environment(nbr_fish, nbr_predators, boundaries, ann_weights, graphics_on = True)
 

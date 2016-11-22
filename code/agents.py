@@ -48,7 +48,7 @@ class Fish(object):
         self.environment = environment
         self.ann = ann
         self._calls_since_last_action = 0
-        self.min_calls_between_actions = 200 
+        self.min_calls_between_actions = -1
         self.neighbourhood_radius = 100
         nbr_retina_cells = 4
         self.sensor = RetinaSensor(environment, self, nbr_retina_cells)
@@ -87,21 +87,21 @@ class Fish(object):
             ann_input = np.reshape(ann_input, [len(ann_input),1])        
             ann_output = self.ann.feed_forward(ann_input)
 
+ 
+        # set angular velocity in interval [-pi/2,pi/2] based on ann-output
         if ann_output > 0.3:
-            # turn right, use rot. matrix to rot. vel.
-            R = np.array([[0, 1],[-1,0]])
-            self.velocity = R @ self.velocity 
+            self.angular_velocity = float(ann_output-0.3)/0.7*np.pi/2
             self._calls_since_last_action = 0
         elif ann_output < -0.3:
             # turn left, use rot. matrix to rot. vel.
-            L = np.array([[0,-1],[1,0]])
-            self.velocity = L @ self.velocity 
+            self.angular_velocity = float(ann_output-0.3)/0.7*np.pi/2
             self._calls_since_last_action = 0
         else:
             # continue straight
+            self.angular_velocity = 0
             self._calls_since_last_action += 1              
-            
-        #if sum(hostile_sensor_output) != 0:
+
+       #if sum(hostile_sensor_output) != 0:
             #print('Help,shark!')
             #print(self.position)
             #R = np.array([[0,-1],[1,0]]) * np.sign(sum(hostile_sensor_output))
@@ -119,8 +119,11 @@ class Fish(object):
 
     def advance(self, delta_time):
         # hacked in so we get something moving/rotating
-        self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.1
-        self.velocity = mu.normalize(self.velocity)
+        #self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * delta_time
+        #self.velocity = mu.normalize(self.velocity)
+        #if self.angular_velocity != 0:
+         #   print(self.angular_velocity)
+        self.velocity = mu.rotate_ccw(self.velocity, - self.angular_velocity*delta_time)
         self.position += self.velocity * delta_time * 20
         x_max = self.environment.boundaries[1]
         y_max = self.environment.boundaries[3]

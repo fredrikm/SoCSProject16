@@ -66,11 +66,11 @@ class Fish(object):
     self.fish_index
     """
 
-    def get_fish_forces(self):
+    def calculate_fish_forces(self):
         f = np.array([0.0, 0.0])
-        neighbours = self.get_neighbours()
+        neighbours = self.find_neighbours()
         k = self.environment.k
-        power = self.power
+        power = self.environment.power
         for fish in neighbours:
 
             k = self.environment.k
@@ -80,17 +80,17 @@ class Fish(object):
 
         return f
 
-    def get_neighbours(self):
+    def find_neighbours(self):
         return [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.neighbourhood_radius)]
 
-    def get_hostile_neighbors(self):
+    def find_hostile_neighbors(self):
         return [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.neighbourhood_radius)]
 
     def think(self): # Can NOT change global system state, nor the pos./vel. of self
         
         # Check what's around
-        self.neighbouring_fish = self.get_neighbours()
-        self.neighbouring_predators = self.get_hostile_neighbors()
+        self.neighbouring_fish = self.find_neighbours()
+        self.neighbouring_predators = self.find_hostile_neighbors()
 
 
         # run sensor
@@ -120,7 +120,7 @@ class Fish(object):
 #        self.velocity += self.velocity + self.get_fish_forces()
         self.velocity = mu.normalize(self.velocity)
 
-        force = self.get_fish_forces()
+        force = self.calculate_fish_forces()
         self.position += (self.velocity+force * self.mass) * delta_time * 20
 
         x_max = self.environment.boundaries[1]

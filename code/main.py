@@ -16,10 +16,14 @@ if __name__ == "__main__":
     # settings
     settings = ConfigurationSettings()
     
+
+
     # simulation settings
+    settings.k = 10**6
+    settings.power = 4
     settings.window_width = 800     # Also used as our simulation boundary
     settings.window_height = 600    # Also used as our simulation boundary
-    settings.nbr_fishes = 1
+    settings.nbr_fishes = 15
     settings.nbr_predators = 1
 
     settings.fish_nbr_retina_cells = 4
@@ -52,22 +56,12 @@ if __name__ == "__main__":
 
     # runs once per frame
     def update(dt):
-        
-        # debug
-        #f = environment.fish_lst[0]
-                
-        #ps = environment.virtual_game_area.get_virtual_positions(f)
-        #print(ps)
-        
 
         for fish in environment.fish_lst:
             fish.think()
-            ## demonstrate neigbour-detection
-            #if fish.neighbouring_predators != [] and fish.sprite.image != environment.dead_fish_image:
-            #    fish.sprite.image = environment.dead_fish_image
             
             # demonstrate sensor functionality
-            if False and environment.settings.graphics_on:
+            if environment.settings.graphics_on:
                 if sum(fish.sensor.read_predators()) != 0 and fish.sprite.image != environment.dead_fish_image:
                     fish.sprite.image = environment.dead_fish_image
                 

@@ -142,15 +142,14 @@ class Predator(object):
         sensor_output = self.sensor.read_fish()
         
         nbr_cells = len(sensor_output)
-        tmp = [is_active*(index-nbr_cells/2) for index, is_active in enumerate(sensor_output)]
-        winning_cell = sum(tmp)
-        if winning_cell < -nbr_cells/2:
-            winning_cell = -nbr_cells/2
-        if winning_cell > -nbr_cells/2:
-            winning_cell = nbr_cells/2
-        desired_rotation = winning_cell * np.pi / (nbr_cells/2)
-        self.angular_velocity = desired_rotation
+        tmp = [index for index, is_active in enumerate(sensor_output) if is_active]
+        winning_cell = np.mean(tmp)
+        interval_size = (nbr_cells-1)/2
+        desired_rotation = np.pi*( winning_cell - interval_size) / interval_size
         
+        angular_gain = 20
+        self.angular_velocity = angular_gain*desired_rotation
+
        
     """
         sensor_output = self.sensor(self.fish_index)
@@ -160,7 +159,11 @@ class Predator(object):
         # hacked in so we get something moving/rotating
         #self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.01
         self.velocity = mu.normalize(self.velocity)
-        self.velocity = mu.rotate_ccw(self.velocity, -self.angular_velocity*delta_time)
+        max_rotation = np.pi/4
+        rotation = self.angular_velocity*delta_time
+        if abs(rotation) > max_rotation:
+            rotation = np.sign(rotation) * max_rotation
+        self.velocity = mu.rotate_ccw(self.velocity, -rotation)
         self.position += self.velocity * self.environment.settings.predator_speed * delta_time
         
         # Wrap around

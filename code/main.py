@@ -16,7 +16,11 @@ if __name__ == "__main__":
     # settings
     settings = ConfigurationSettings()
     
+
+
     # simulation settings
+    settings.k = 10**6
+    settings.power = 4
     settings.window_width = 800     # Also used as our simulation boundary
     settings.window_height = 600    # Also used as our simulation boundary
     settings.nbr_fishes = 50

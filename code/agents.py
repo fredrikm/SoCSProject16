@@ -49,16 +49,40 @@ class Fish(object):
         self.speed = self.environment.settings.fish_speed   # We use same constant speed for all fishes now in the beginning
         self.ann = ann
         self.sensor = RetinaSensor(environment, self, self.environment.settings.fish_nbr_retina_cells)
-        
+        self.mass = 1
         if self.environment.settings.graphics_on:
             self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
             self.sprite.scale = self.environment.settings.fish_sprite_scale
-    
+
+
+    def calculate_fish_forces(self):
+        f = np.array([0.0, 0.0])
+        neighbours = self.find_neighbours()
+        k = self.environment.settings.k
+        power = self.environment.settings.power
+        for fish in neighbours:
+
+            magnitude = k / np.linalg.norm(fish.position-self.position)**power
+            direction = self.position-fish.position
+            f_i = magnitude * direction
+            f += f_i
+        return f
+
+    def find_neighbours(self):
+        neighbours = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.environment.settings.fish_neighbourhood_radius)]
+        return neighbours
+
+    def find_hostile_neighbors(self):
+        return [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.environment.settings.fish_neighbourhood_radius)]
+
+
+
 
     def think(self): # Can NOT change global system state, nor the pos./vel. of self       
         # Check what's around
-        self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.environment.settings.fish_neighbourhood_radius)]
-        self.neighbouring_predators = [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.environment.settings.fish_neighbourhood_radius)]
+
+        self.neighbouring_fish = self.find_neighbours()
+        self.neighbouring_predators = self.find_hostile_neighbors()
 
         # run sensor and neural network
         friendly_sensor_output = self.sensor.read_fish()
@@ -71,9 +95,15 @@ class Fish(object):
         self.angular_velocity = float(ann_output)*np.pi/2
 
     def advance(self, delta_time):
+
          # Update velocity and position
-        self.velocity = mu.rotate_ccw(self.velocity, - self.angular_velocity * delta_time)
-        self.position += self.velocity * self.speed * delta_time 
+        #self.velocity = mu.rotate_ccw(self.velocity, - self.angular_velocity * delta_time)
+
+        force = self.calculate_fish_forces()
+        self.velocity = mu.normalize(self.velocity+force / self.mass ) * self.speed
+        self.position += self.velocity * delta_time
+
+
 
         # Wrap around
         x_max = self.environment.boundaries[1]
@@ -83,13 +113,11 @@ class Fish(object):
 
         # Update sprite if we are running with graphics on        
         if self.environment.settings.graphics_on:
+
             self.sprite.rotation = mu.dir_to_angle(self.velocity)
             self.sprite.set_position(self.position[0], self.position[1])
 
-        #check for collisions, add repelleing forces
-        # Use self.visible_fish to get potential collisions so that we don't have
-        # to run the costly search more than once
- 
+
         
 
 class Predator(object):

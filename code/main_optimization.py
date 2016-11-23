@@ -8,6 +8,7 @@ Created on Tue Nov 22 19:48:08 2016
 from copy import deepcopy
 from functools import partial
 import numpy as np
+import csv
 
 from pso import Pso
 from environment_module import Environment, ConfigurationSettings
@@ -76,6 +77,21 @@ def evaluate_chromosome(chromosome, size_spec, environment_settings, delta_t, nb
     ann_weights = decode_chromosome(chromosome, size_spec)
     return evaluate_weights(ann_weights, environment_settings , delta_t, nbr_of_iteraions)
 
+def results_to_file(chromosome, size_spec, save_path):
+    save_path
+    save_path_chrom = save_path + "_chromosome"
+    save_path_spec = save_path + "_size_spec"
+    np.savetxt(save_path_chrom, chromosome, delimiter = ",")
+    np.savetxt(save_path_spec, size_spec, delimiter = ",")
+    
+def results_from_file(chromosome_path, size_spec_path):
+    with open(chromosome_path) as csvfile:
+        readCSV = csv.reader(csvfile, delimiter=',')
+        chromosome = [np.float(row[0]) for row in readCSV]        
+    with open(size_spec_path) as csvfile:
+        readCSV = csv.reader(csvfile, delimiter=',')
+        size_spec = [int(np.float(row[0])) for row in readCSV]
+    return chromosome, size_spec
 
 def main():
     # ann_settings
@@ -124,6 +140,8 @@ def main():
     print("With relative mortality")
     print(best_fitness)
     
+    save_path = '../best_network'
+    results_to_file(pso.swarm_best, size_spec, save_path)
     #debugging
     """ann_weights = [np.ones([4,8]), np.ones([1,4])]
     print(ann_weights)

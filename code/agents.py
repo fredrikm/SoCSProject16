@@ -98,21 +98,40 @@ class Predator(object):
         self.position = position
         self.velocity = velocity
         self.speed = self.environment.settings.predator_speed
-
+        self.environment = environment
+        
+        self.sensor = RetinaSensor(environment, self, self.environment.settings.predator_nbr_retina_cells)
         if self.environment.settings.graphics_on:
             self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
             self.sprite.scale = self.environment.settings.predator_sprite_scale
 
     def think(self):
-        pass
+        # Check what's around
+        self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.environment.settings.predator_neighbourhood_radius)]
+
+        # run sensor
+        sensor_output = self.sensor.read_fish()
+        
+        nbr_cells = len(sensor_output)
+        tmp = [is_active*(index-nbr_cells/2) for index, is_active in enumerate(sensor_output)]
+        winning_cell = sum(tmp)
+        if winning_cell < -nbr_cells/2:
+            winning_cell = -nbr_cells/2
+        if winning_cell > -nbr_cells/2:
+            winning_cell = nbr_cells/2
+        desired_rotation = winning_cell * np.pi / (nbr_cells/2)
+        self.angular_velocity = desired_rotation
+        
+       
     """
         sensor_output = self.sensor(self.fish_index)
         action = self.fsm(sensor_output)
        """ 
     def advance(self, delta_time):
         # hacked in so we get something moving/rotating
-        self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.01
+        #self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.01
         self.velocity = mu.normalize(self.velocity)
+        self.velocity = mu.rotate_ccw(self.velocity, -self.angular_velocity*delta_time)
         self.position += self.velocity * self.environment.settings.predator_speed * delta_time
         
         # Wrap around

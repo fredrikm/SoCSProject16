@@ -23,6 +23,8 @@ def create_environment(nbr_fishes, nbr_predators, boundaries, radius):
     settings.fish_neighbourhood_radius = radius
     settings.fish_speed = 20 # units per second in direction of velocity
 
+    settings.predator_nbr_retina_cells = 20
+    settings.predator_neighbourhood_radius = 400
     settings.predator_speed = 40
 
     # graphic settings

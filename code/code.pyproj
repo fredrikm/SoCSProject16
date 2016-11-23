@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5ee6a56b-bf03-458f-9342-07114590c4c2}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>main.py</StartupFile>
+    <StartupFile>tests.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -22,6 +22,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="agents.py" />
+    <Compile Include="environment_module.py" />
     <Compile Include="fsm_module.py" />
     <Compile Include="main.py" />
     <Compile Include="math_utility_module.py">

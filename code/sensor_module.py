@@ -40,21 +40,21 @@ class RetinaSensor(object):
     def read_fish(self):
         for cell in self._retina_cells:
             cell.reset()
-        for fish in self.agent.neighbouring_fish:
-            cell = self.find_cell(fish)
+        for (fish, pos) in self.agent.neighbouring_fish:
+            cell = self.find_cell(fish, pos)
             cell.agents_in_sight.append(fish)
         return [cell.read() for cell in self._retina_cells]
     
     def read_predators(self):
         for cell in self._retina_cells:
             cell.reset()
-        for predator in self.agent.neighbouring_predators:
-            cell = self.find_cell(predator)
+        for (predator, pos) in self.agent.neighbouring_predators:
+            cell = self.find_cell(predator, pos)
             cell.agents_in_sight.append(predator)
         return [cell.read() for cell in self._retina_cells]
         
-    def find_cell(self, other_agent):
-        rel_pos_other_agent = other_agent.position - self.agent.position
+    def find_cell(self, other_agent, pos):
+        rel_pos_other_agent = pos - self.agent.position
         angle = mu.directed_angle2D(rel_pos_other_agent, self.agent.velocity)
         tmp = math.floor(angle / self._cell_width)
         index = int(tmp + self._nbr_cells/2)

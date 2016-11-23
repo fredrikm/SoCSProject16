@@ -35,18 +35,22 @@ def directed_angle2D(u,v):
         return abs(angle)%np.pi*np.sign(angle)
 
 # checks if other agent is neighbour to agent
-def is_neighbour(agent, other_agent, radius, field_of_view = -1):
+def is_neighbour(agent, other_agent, radius2, field_of_view = -1):
     if agent == other_agent:
-        return False
-    distance = np.linalg.norm(other_agent.position-agent.position)
-    if distance <= radius:
-        if field_of_view == -1: #No limitation on field of view
-            return True
-        else:                
-            angle = calculate_angle2D(agent.velocity, other_agent.position)
-            if angle <= field_of_view:
-                return True
-    return False
+        return (False, agent.position)
+
+    for i in range(9):
+        u = other_agent.positions[i] - agent.position;
+        distance2 = (u[0]**2 + u[1]**2)
+        
+        if distance2 <= radius2:
+            if field_of_view == -1: #No limitation on field of view
+                return (True, other_agent.positions[i])
+            else:                
+                angle = calculate_angle2D(agent.velocity, other_agent.position)
+                if angle <= field_of_view:
+                    return True
+    return (False, agent.position)
 
 def rotate_ccw(u,theta): #rotate vector counter clockwise
     shape = u.shape

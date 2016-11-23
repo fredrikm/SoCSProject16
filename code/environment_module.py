@@ -9,6 +9,7 @@ from sensor_module import RetinaSensor
 from fsm_module import Predator_FSM
 from neural_network import ANN
 import math_utility_module as mu
+from virtual_game_area import VirtualGameArea
 
 # Configuration settings
 class ConfigurationSettings(object):
@@ -22,13 +23,13 @@ class ConfigurationSettings(object):
         # fish parameters
         self.fish_sprite_scale = -1
         self.fish_nbr_retina_cells = -1
-        self.fish_neighbourhood_radius = -1
+        self.fish_neighbourhood_radius2 = -1
         self.fish_speed = 0
 
         # predator parameters
         self.predator_sprite_scale = -1
         self.predator_nbr_retina_cells = -1
-        self.predator_neighbourhood_radius = -1
+        self.predator_neighbourhood_radius2 = -1
         self.predator_speed = 0
 
    
@@ -44,6 +45,8 @@ class Environment(object):
 
         # We derive boundaries from window width/height
         self.boundaries = [0, self.settings.window_width, 0, self.settings.window_height]
+
+        self.virtual_game_area = VirtualGameArea(self.settings.window_width, self.settings.window_height)
 
         #fsm = Predator_FSM(self)
 

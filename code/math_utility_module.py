@@ -24,7 +24,7 @@ def calculate_angle2D(u,v):
     u = normalize(u)
     return float(np.arccos(np.transpose(u) @ v))
 
-# Calulate directed angle from u to v
+# Calulate directed angle from u to v, counter clockwise
 def directed_angle2D(u,v):
     u = normalize(u)
     v = normalize(v)

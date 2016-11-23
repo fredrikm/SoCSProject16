@@ -13,6 +13,9 @@ from agents import Fish
 def create_environment(nbr_fishes, nbr_predators, boundaries, radius):
     # settings
     settings = ConfigurationSettings()
+
+    settings.k = 10**6
+    settings.power = 4
     settings.window_width = boundaries[1]
     settings.window_height = boundaries[3]
     settings.nbr_fishes = nbr_fishes
@@ -23,6 +26,8 @@ def create_environment(nbr_fishes, nbr_predators, boundaries, radius):
     settings.fish_neighbourhood_radius = radius
     settings.fish_speed = 20 # units per second in direction of velocity
 
+    settings.predator_nbr_retina_cells = 20
+    settings.predator_neighbourhood_radius = 400
     settings.predator_speed = 40
 
     # graphic settings

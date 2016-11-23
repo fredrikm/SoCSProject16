@@ -127,16 +127,15 @@ class Predator(object):
         self.velocity = velocity
         self.speed = self.environment.settings.predator_speed
         self.environment = environment
-        self.neighbourhood_radius = 400
-        nbr_retina_cells = 20
-        self.sensor = RetinaSensor(environment, self, nbr_retina_cells)
+        
+        self.sensor = RetinaSensor(environment, self, self.environment.settings.predator_nbr_retina_cells)
         if self.environment.settings.graphics_on:
             self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
             self.sprite.scale = self.environment.settings.predator_sprite_scale
 
     def think(self):
         # Check what's around
-        self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.neighbourhood_radius)]
+        self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.environment.settings.predator_neighbourhood_radius)]
 
         # run sensor
         sensor_output = self.sensor.read_fish()

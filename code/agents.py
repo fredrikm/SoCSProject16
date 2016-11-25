@@ -216,8 +216,4 @@ class Predator(object):
         if nbr_attackable_fish>0:
             index_attack = np.random.randint(nbr_attackable_fish)
             attacked_fish = self.attackable_fish[index_attack]
-
-            r = np.random.rand()
-
-            if r < 1 / nbr_attackable_fish:
-                attacked_fish.is_alive = False
+            attacked_fish.is_alive = False

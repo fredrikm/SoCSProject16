@@ -34,6 +34,7 @@ if __name__ == "__main__":
     settings.predator_nbr_retina_cells = 20
     settings.predator_neighbourhood_radius2 = 100**2
     settings.predator_speed = 100
+    settings.predator_feeding_frequency = 5
 
     # graphic settings
     settings.graphics_on = True
@@ -79,7 +80,7 @@ if __name__ == "__main__":
             #environment.fish_lst.remove(fish)
 
         for predator in environment.predator_lst:
-            predator.attack()
+            predator.attack(dt)
 
         environment.remove_dead_fish()
     # event when rendering is requested

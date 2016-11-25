@@ -142,10 +142,13 @@ class Predator(object):
         
         nbr_cells = len(sensor_output)
         tmp = [index for index, is_active in enumerate(sensor_output) if is_active]
-        winning_cell = np.mean(tmp)
-        interval_size = (nbr_cells-1)/2
-        desired_rotation = np.pi*( winning_cell - interval_size) / interval_size
-        
+        if tmp != []:
+            winning_cell = np.mean(tmp)
+            interval_size = (nbr_cells-1)/2
+            desired_rotation = np.pi*( winning_cell - interval_size) / interval_size
+        else:
+            desired_rotation = 0
+
         angular_gain = 20
         self.angular_velocity = angular_gain*desired_rotation
 

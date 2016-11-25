@@ -23,17 +23,17 @@ if __name__ == "__main__":
     settings.power = 4
     settings.window_width = 800     # Also used as our simulation boundary
     settings.window_height = 600    # Also used as our simulation boundary
-    settings.nbr_fishes = 50
+    settings.nbr_fishes = 40
     settings.nbr_predators = 1
 
     settings.fish_nbr_retina_cells = 4
-    settings.fish_neighbourhood_radius = 100
-    settings.fish_speed = 20 # units per second in direction of velocity
+    settings.fish_neighbourhood_radius2 = 100**2
+    settings.fish_speed = 60 # units per second in direction of velocity
 
 
     settings.predator_nbr_retina_cells = 20
-    settings.predator_neighbourhood_radius = 400
-    settings.predator_speed = 40
+    settings.predator_neighbourhood_radius2 = 200**2
+    settings.predator_speed = 100
 
     # graphic settings
     settings.graphics_on = True
@@ -56,25 +56,27 @@ if __name__ == "__main__":
 
     # runs once per frame
     def update(dt):
-        
+
+        fish_to_remove = []
+
         for fish in environment.fish_lst:
             fish.think()
-            ## demonstrate neigbour-detection
-            #if fish.neighbouring_predators != [] and fish.sprite.image != environment.dead_fish_image:
-            #    fish.sprite.image = environment.dead_fish_image
             
             # demonstrate sensor functionality
             if environment.settings.graphics_on:
                 if sum(fish.sensor.read_predators()) != 0 and fish.sprite.image != environment.dead_fish_image:
                     fish.sprite.image = environment.dead_fish_image
-                    environment.fish_lst.remove(fish)
-                
+                    fish_to_remove.append(fish)
+                        
         for predator in environment.predator_lst:
             predator.think()
         for fish in environment.fish_lst:
             fish.advance(dt)
         for predator in environment.predator_lst:
             predator.advance(dt)
+
+        for fish in fish_to_remove:
+            environment.fish_lst.remove(fish)
        
     # event when rendering is requested
     @window.event

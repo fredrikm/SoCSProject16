@@ -50,6 +50,10 @@ class Fish(object):
         self.ann = ann
         self.sensor = RetinaSensor(environment, self, self.environment.settings.fish_nbr_retina_cells)
         self.mass = 1
+        
+        # init virtual positions
+        self.positions = self.environment.virtual_game_area.get_virtual_positions(self.position);
+
         if self.environment.settings.graphics_on:
             self.sprite = pyglet.sprite.Sprite(image, position[0], position[1], subpixel = True, batch = sprite_batch)
             self.sprite.scale = self.environment.settings.fish_sprite_scale
@@ -57,29 +61,36 @@ class Fish(object):
 
     def calculate_fish_forces(self):
         f = np.array([0.0, 0.0])
-        neighbours = self.find_neighbours()
+        neighbours = self.neighbouring_fish
         k = self.environment.settings.k
         power = self.environment.settings.power
-        for fish in neighbours:
+        for (fish, pos) in neighbours:
 
-            magnitude = k / np.linalg.norm(fish.position-self.position)**power
-            direction = self.position-fish.position
+            magnitude = k / np.linalg.norm(pos - self.position)**power
+            direction = self.position-pos
             f_i = magnitude * direction
             f += f_i
         return f
 
     def find_neighbours(self):
-        neighbours = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.environment.settings.fish_neighbourhood_radius)]
+        neighbours = []
+        for fish in self.environment.fish_lst:
+            (isa, pos) = mu.is_neighbour(self, fish, self.environment.settings.fish_neighbourhood_radius2)
+            if isa == True:
+                neighbours.append((fish, pos))
+
         return neighbours
 
     def find_hostile_neighbors(self):
-        return [predator for predator in self.environment.predator_lst if mu.is_neighbour(self, predator, self.environment.settings.fish_neighbourhood_radius)]
+        neighbours = []
+        for predator in self.environment.predator_lst:
+            (isa, pos) = mu.is_neighbour(self, predator, self.environment.settings.fish_neighbourhood_radius2)
+            if isa == True:
+                neighbours.append((predator, pos))
 
-
-
+        return neighbours
 
     def think(self): # Can NOT change global system state, nor the pos./vel. of self       
-        # Check what's around
 
         self.neighbouring_fish = self.find_neighbours()
         self.neighbouring_predators = self.find_hostile_neighbors()
@@ -103,13 +114,14 @@ class Fish(object):
         self.velocity = mu.normalize(self.velocity+force / self.mass ) * self.speed
         self.position += self.velocity * delta_time
 
-
-
         # Wrap around
         x_max = self.environment.boundaries[1]
         y_max = self.environment.boundaries[3]
         self.position[0]  = self.position[0] % x_max
         self.position[1] = self.position[1]  % y_max
+
+        # Update virtual positions
+        self.positions = self.environment.virtual_game_area.get_virtual_positions(self.position);
 
         # Update sprite if we are running with graphics on        
         if self.environment.settings.graphics_on:
@@ -127,6 +139,9 @@ class Predator(object):
         self.velocity = velocity
         self.speed = self.environment.settings.predator_speed
         self.environment = environment
+       
+        # init virtual positions
+        self.positions = self.environment.virtual_game_area.get_virtual_positions(self.position);
         
         self.sensor = RetinaSensor(environment, self, self.environment.settings.predator_nbr_retina_cells)
         if self.environment.settings.graphics_on:
@@ -135,7 +150,11 @@ class Predator(object):
 
     def think(self):
         # Check what's around
-        self.neighbouring_fish = [other_fish for other_fish in self.environment.fish_lst if mu.is_neighbour(self, other_fish, self.environment.settings.predator_neighbourhood_radius)]
+        self.neighbouring_fish = []
+        for fish in self.environment.fish_lst:
+            (isa, pos) = mu.is_neighbour(self, fish, self.environment.settings.predator_neighbourhood_radius2)
+            if isa == True:
+                self.neighbouring_fish.append((fish, pos))
 
         # run sensor
         sensor_output = self.sensor.read_fish()
@@ -173,6 +192,9 @@ class Predator(object):
         y_max = self.environment.boundaries[3]
         self.position[0]  = self.position[0] % x_max
         self.position[1] = self.position[1]  % y_max
+
+        # Update virtual positions
+        self.positions = self.environment.virtual_game_area.get_virtual_positions(self.position);
 
         if self.environment.settings.graphics_on:
             self.sprite.rotation = mu.dir_to_angle(self.velocity)

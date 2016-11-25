@@ -19,8 +19,8 @@ if __name__ == "__main__":
 
 
     # simulation settings
-    settings.k = 10**6
-    settings.power = 4
+    settings.k = 10**8
+    settings.power = 6
     settings.window_width = 800     # Also used as our simulation boundary
     settings.window_height = 600    # Also used as our simulation boundary
     settings.nbr_fishes = 40
@@ -28,16 +28,17 @@ if __name__ == "__main__":
 
     settings.fish_nbr_retina_cells = 4
     settings.fish_neighbourhood_radius2 = 100**2
-    settings.fish_speed = 60 # units per second in direction of velocity
+    settings.fish_speed = 50 # units per second in direction of velocity
 
 
     settings.predator_nbr_retina_cells = 20
     settings.predator_neighbourhood_radius2 = 200**2
-    settings.predator_speed = 100
+    settings.predator_speed = 80
 
     # graphic settings
     settings.graphics_on = True
-    settings.fish_sprite_scale = 0.5
+    settings.fish_sprite_scale = (settings.window_width / (64 * 25))
+    #settings.fish_sprite_scale = 0.5
     settings.predator_sprite_scale = 0.6
         
     # Create main window

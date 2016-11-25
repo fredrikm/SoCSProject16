@@ -67,6 +67,8 @@ class Fish(object):
         for (fish, pos) in neighbours:
 
             magnitude = k / np.linalg.norm(pos - self.position)**power
+            if magnitude > 2:
+                magnitude = 2
             direction = self.position-pos
             f_i = magnitude * direction
             f += f_i
@@ -111,7 +113,8 @@ class Fish(object):
         #self.velocity = mu.rotate_ccw(self.velocity, - self.angular_velocity * delta_time)
 
         force = self.calculate_fish_forces()
-        self.velocity = mu.normalize(self.velocity+force / self.mass ) * self.speed
+        self.velocity = mu.normalize(self.velocity) * self.speed + force / self.mass
+
         self.position += self.velocity * delta_time
 
         # Wrap around

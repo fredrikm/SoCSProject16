@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5ee6a56b-bf03-458f-9342-07114590c4c2}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>main_optimization.py</StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>

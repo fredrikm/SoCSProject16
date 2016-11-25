@@ -28,11 +28,11 @@ if __name__ == "__main__":
 
     settings.fish_nbr_retina_cells = 4
     settings.fish_neighbourhood_radius2 = 100**2
+    settings.predator_attack_radius = 50 ** 2
     settings.fish_speed = 60 # units per second in direction of velocity
 
-
     settings.predator_nbr_retina_cells = 20
-    settings.predator_neighbourhood_radius2 = 200**2
+    settings.predator_neighbourhood_radius2 = 100**2
     settings.predator_speed = 100
 
     # graphic settings
@@ -63,10 +63,10 @@ if __name__ == "__main__":
             fish.think()
             
             # demonstrate sensor functionality
-            if environment.settings.graphics_on:
-                if sum(fish.sensor.read_predators()) != 0 and fish.sprite.image != environment.dead_fish_image:
-                    fish.sprite.image = environment.dead_fish_image
-                    fish_to_remove.append(fish)
+            #if environment.settings.graphics_on:
+                #if sum(fish.sensor.read_predators()) != 0 and fish.sprite.image != environment.dead_fish_image:
+                    #fish.sprite.image = environment.dead_fish_image
+                    #fish_to_remove.append(fish)
                         
         for predator in environment.predator_lst:
             predator.think()
@@ -75,9 +75,13 @@ if __name__ == "__main__":
         for predator in environment.predator_lst:
             predator.advance(dt)
 
-        for fish in fish_to_remove:
-            environment.fish_lst.remove(fish)
-       
+        #for fish in fish_to_remove:
+            #environment.fish_lst.remove(fish)
+
+        for predator in environment.predator_lst:
+            predator.attack()
+
+        environment.remove_dead_fish()
     # event when rendering is requested
     @window.event
     def on_draw():

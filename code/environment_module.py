@@ -32,6 +32,7 @@ class ConfigurationSettings(object):
         self.predator_neighbourhood_radius2 = -1
         self.predator_attack_radius = -1
         self.predator_speed = 0
+        self.predator_feeding_frequency = 1
 
    
 

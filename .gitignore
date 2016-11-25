@@ -1,6 +1,6 @@
 code/__pycache__/
-./idea/
 code/.vs/
 *.pyperf
 *.sln
 .idea/
+best_network*/

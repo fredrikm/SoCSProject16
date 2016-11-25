@@ -109,9 +109,13 @@ def main():
     x_min = -2
     # simulation settings
     delta_t = 0.2
-    nbr_of_iteraions = 10    
+    nbr_of_iteraions = 10 
+       
     # environment settings
-    settings = ConfigurationSettings()    
+    settings = ConfigurationSettings() 
+       
+    settings.k = 10**6
+    settings.power = 4    
     settings.window_width = 800     # Also used as our simulation boundary
     settings.window_height = 600    # Also used as our simulation boundary
     settings.nbr_fishes = 50
@@ -119,6 +123,9 @@ def main():
     settings.fish_nbr_retina_cells = 4
     settings.fish_neighbourhood_radius = 100
     settings.fish_speed = 20 # units per second in direction of velocity
+
+    settings.predator_nbr_retina_cells = 20
+    settings.predator_neighbourhood_radius2 = 200**2
     settings.predator_speed = 40
 
     evaluate = partial(evaluate_chromosome, size_spec = size_spec, environment_settings=settings, delta_t=delta_t, nbr_of_iteraions=nbr_of_iteraions)

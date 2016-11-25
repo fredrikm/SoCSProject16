@@ -61,14 +61,13 @@ class Fish(object):
 
     def calculate_fish_forces(self):
         f = np.array([0.0, 0.0])
-        #neighbours = self.find_neighbours()
         neighbours = self.neighbouring_fish
         k = self.environment.settings.k
         power = self.environment.settings.power
         for (fish, pos) in neighbours:
 
             magnitude = k / np.linalg.norm(pos - self.position)**power
-            direction = self.position-fish.position
+            direction = self.position-pos
             f_i = magnitude * direction
             f += f_i
         return f
@@ -153,24 +152,25 @@ class Predator(object):
         # Check what's around
         self.neighbouring_fish = []
         for fish in self.environment.fish_lst:
-            if fish.sprite.image != self.environment.dead_fish_image: # debug, lets not care about dead fish
-                (isa, pos) = mu.is_neighbour(self, fish, self.environment.settings.predator_neighbourhood_radius2)
-                if isa == True:
-                    self.neighbouring_fish.append((fish, pos))
+            (isa, pos) = mu.is_neighbour(self, fish, self.environment.settings.predator_neighbourhood_radius2)
+            if isa == True:
+                self.neighbouring_fish.append((fish, pos))
 
         # run sensor
         sensor_output = self.sensor.read_fish()
         
         nbr_cells = len(sensor_output)
-        tmp = [is_active*(index-nbr_cells/2) for index, is_active in enumerate(sensor_output)]
-        winning_cell = sum(tmp)
-        if winning_cell < -nbr_cells/2:
-            winning_cell = -nbr_cells/2
-        if winning_cell > -nbr_cells/2:
-            winning_cell = nbr_cells/2
-        desired_rotation = winning_cell * np.pi / (nbr_cells/2)
-        self.angular_velocity = desired_rotation
-        
+        tmp = [index for index, is_active in enumerate(sensor_output) if is_active]
+        if tmp != []:
+            winning_cell = np.mean(tmp)
+            interval_size = (nbr_cells-1)/2
+            desired_rotation = np.pi*( winning_cell - interval_size) / interval_size
+        else:
+            desired_rotation = 0
+
+        angular_gain = 20
+        self.angular_velocity = angular_gain*desired_rotation
+
        
     """
         sensor_output = self.sensor(self.fish_index)
@@ -180,7 +180,11 @@ class Predator(object):
         # hacked in so we get something moving/rotating
         #self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.01
         self.velocity = mu.normalize(self.velocity)
-        self.velocity = mu.rotate_ccw(self.velocity, -self.angular_velocity*delta_time)
+        max_rotation = np.pi/4
+        rotation = self.angular_velocity*delta_time
+        if abs(rotation) > max_rotation:
+            rotation = np.sign(rotation) * max_rotation
+        self.velocity = mu.rotate_ccw(self.velocity, -rotation)
         self.position += self.velocity * self.environment.settings.predator_speed * delta_time
         
         # Wrap around

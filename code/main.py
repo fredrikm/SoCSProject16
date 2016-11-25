@@ -67,6 +67,7 @@ if __name__ == "__main__":
             if environment.settings.graphics_on:
                 if sum(fish.sensor.read_predators()) != 0 and fish.sprite.image != environment.dead_fish_image:
                     fish.sprite.image = environment.dead_fish_image
+                    environment.fish_lst.remove(fish)
                 
         for predator in environment.predator_lst:
             predator.think()

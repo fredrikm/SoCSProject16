@@ -20,7 +20,6 @@ class Pso:
 
         self.particleBest = np.array(self.n_particles)
         self.swarm_best = np.zeros(self.n_variables)-1
-        self.swarm_best_fitness = 10
 
     def evaluate_all_particles(self):
 
@@ -33,7 +32,6 @@ class Pso:
 
                 if fitness<self.function(self.swarm_best):
                     self.swarm_best = p.position
-                    self.swam_best_fitness = fitness
 
     def update_velocities(self):
         for p in self.particles:

@@ -50,6 +50,7 @@ class Fish(object):
         self.ann = ann
         self.sensor = RetinaSensor(environment, self, self.environment.settings.fish_nbr_retina_cells)
         self.mass = 1
+        self.is_alive = True
         
         # init virtual positions
         self.positions = self.environment.virtual_game_area.get_virtual_positions(self.position);
@@ -201,19 +202,22 @@ class Predator(object):
             self.sprite.set_position(self.position[0], self.position[1])
 
     def attack(self):
-        # Check what's around
-        self.attackable_fish = [other_fish for other_fish in self.neighbouring_fish if
-                                mu.is_neighbour(self, other_fish, self.environment.settings.predator_attack_radius)]
+        #Check for attackable fish
+        self.attackable_fish = []
+        for fish in self.environment.fish_lst:
+            (isa, pos)=mu.is_neighbour(self, fish, self.environment.settings.predator_attack_radius)
+            if isa == True:
+                self.attackable_fish.append(fish)
+
 
         nbr_attackable_fish = len(self.attackable_fish)
 
-        index_attack = np.random.choice(nbr_attackable_fish, 1)
 
-        attacked_fish = self.attackable_fish[index_attack]
+        if nbr_attackable_fish>0:
+            index_attack = np.random.randint(nbr_attackable_fish)
+            attacked_fish = self.attackable_fish[index_attack]
 
-        r = np.random.rand()
+            r = np.random.rand()
 
-        if r < 1 / nbr_attackable_fish:
-            self.environment.fish_lst.remove(attacked_fish)
-
-
+            if r < 1 / nbr_attackable_fish:
+                attacked_fish.is_alive = False

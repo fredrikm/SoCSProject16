@@ -92,3 +92,10 @@ class Environment(object):
     def center_image(self, image):
         image.anchor_x = image.width / 2
         image.anchor_y = image.height / 2
+
+    def remove_dead_fish(self):
+
+        for fish in self.fish_lst:
+            if not fish.is_alive:
+                fish.sprite.image = self.dead_fish_image
+                self.fish_lst.remove(fish)

@@ -178,3 +178,25 @@ class Predator(object):
             self.sprite.rotation = mu.dir_to_angle(self.velocity)
             self.sprite.set_position(self.position[0], self.position[1])
 
+    def eat(self):
+        # Check what's around
+        self.attackable_fish = [other_fish for other_fish in self.neighbouring_fish if mu.is_neighbour(self, other_fish, self.environment.settings.predator_attack_radius)]
+
+        nbr_attackable_fish = len(self.attackable_fish)
+
+        index_attack = np.random.choice(nbr_attackable_fish, 1)
+
+        attacked_fish = self.attackable_fish[index_attack]
+
+        r = np.random.rand()
+
+        if r < 1/nbr_attackable_fish:
+            self.environment.fish_lst.remove(attacked_fish)
+
+
+
+
+
+
+
+

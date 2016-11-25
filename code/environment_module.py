@@ -29,6 +29,7 @@ class ConfigurationSettings(object):
         self.predator_sprite_scale = -1
         self.predator_nbr_retina_cells = -1
         self.predator_neighbourhood_radius = -1
+        self.predator_attack_radius = -1
         self.predator_speed = 0
 
    

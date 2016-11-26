@@ -9,8 +9,11 @@ from copy import deepcopy
 from functools import partial
 import numpy as np
 import csv
+import os
+import random
 
 from pso import Pso
+
 from environment_module import Environment, ConfigurationSettings
 
 
@@ -77,13 +80,19 @@ def evaluate_chromosome(chromosome, size_spec, environment_settings, delta_t, nb
     ann_weights = decode_chromosome(chromosome, size_spec)
     return evaluate_weights(ann_weights, environment_settings , delta_t, nbr_of_iteraions)
 
-def results_to_file(chromosome, size_spec, save_path):
-    save_path
-    save_path_chrom = save_path + "_chromosome"
-    save_path_spec = save_path + "_size_spec"
+
+def results_to_file(chromosome, size_spec, save_path, iteration, run_number):
+    save_path = save_path[:-1] + str(run_number) + '/'
+    save_path_chrom = save_path + "_run_" + str(iteration) + "_chromosome_"
+    save_path_spec = save_path + "_run_" + str(iteration) + "_size_spec_"
+
+
+    if not os.path.exists(save_path):
+        os.mkdir(save_path, 0o755)
+
     np.savetxt(save_path_chrom, chromosome, delimiter = ",")
     np.savetxt(save_path_spec, size_spec, delimiter = ",")
-    
+
 def results_from_file(chromosome_path, size_spec_path):
     with open(chromosome_path) as csvfile:
         readCSV = csv.reader(csvfile, delimiter=',')
@@ -97,8 +106,8 @@ def main():
     # ann_settings
     size_spec = [8,4,1]
     # pso settings
-    nbr_generations = 20
-    number_of_particles = 10
+    nbr_generations = 1
+    number_of_particles = 1
     number_of_variables = calculate_chromosome_length(size_spec)
     c1 = 1
     c2 = 1 
@@ -134,21 +143,34 @@ def main():
     #instantiate pso
     pso = Pso(evaluate, number_of_particles, number_of_variables, c1, c2, inertia_max, inertia_min, beta, x_max, x_min)
     # run pso
+    previous_best_fitness = np.inf
+    fitnesses = np.zeros(nbr_generations)
+    run_hash = random.getrandbits(16)
+
     for i in range(nbr_generations):
             pso.evaluate_all_particles()
             pso.update_positions()
             pso.update_velocities()
             pso.update_inertia()
+
+            if pso.swarm_best_fitness <= previous_best_fitness:
+                print("saving...")
+                previous_best_fitness = pso.swarm_best_fitness
+            np.append(fitnesses, previous_best_fitness)
+            save_path = '../best_network/'
+            results_to_file(pso.swarm_best, size_spec, save_path, i, run_hash)
     
     print("------ RESULTS -------")
     print("Best network")
     print(pso.swarm_best)
     best_fitness = evaluate(pso.swarm_best)
     print("With relative mortality")
-    print(best_fitness)
-    
-    save_path = '../best_network'
-    results_to_file(pso.swarm_best, size_spec, save_path)
+    print(previous_best_fitness)
+
+    save_path = '../best_network' + str(run_hash) + '/fitnesses'
+    print("Results have been saved to folder: " + save_path)
+    np.savetxt(save_path, fitnesses)
+
     #debugging
     """ann_weights = [np.ones([4,8]), np.ones([1,4])]
     print(ann_weights)

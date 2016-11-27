@@ -58,3 +58,12 @@ def rotate_ccw(u,theta): #rotate vector counter clockwise
     R = [[np.cos(theta), -np.sin(theta)],[np.sin(theta), np.cos(theta)]]
     v =  R @ u
     return np.reshape(v,shape)
+    
+def rws(fitness_values):
+    tot_fitness_sum = sum(fitness_values)
+    r = np.random.rand()
+    for index, fitness in enumerate(fitness_values):
+        cumulative_rel_fitness = sum(fitness_values[:index])/tot_fitness_sum
+        if r>cumulative_rel_fitness:
+            return index
+    return len(fitness_values)-1 #last index

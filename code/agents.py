@@ -161,9 +161,9 @@ class Predator(object):
             fish_appeal_lst = []
             for (fish, pos) in self.neighbouring_fish:
                 rel_fish_pos = self.position - pos
-                distance = np.sqrt(np.dot(rel_fish_pos, rel_fish_pos))
+                distance2 = np.dot(rel_fish_pos, rel_fish_pos)
                 angle = mu.calculate_angle2D(rel_fish_pos, self.velocity)                
-                appeal = 1/(0.01 + distance*distance*angle)
+                appeal = 1/(0.01 + distance2*angle)
                 fish_appeal_lst.append(appeal)
             target_fish_index = mu.rws(fish_appeal_lst)
             self.neighbouring_fish = [self.neighbouring_fish[target_fish_index]]

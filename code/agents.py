@@ -156,7 +156,17 @@ class Predator(object):
             (isa, pos) = mu.is_neighbour(self, fish, self.environment.settings.predator_neighbourhood_radius2)
             if isa == True:
                 self.neighbouring_fish.append((fish, pos))
-
+        # hack to override sensor instabilities
+        if self.neighbouring_fish != []:
+            fish_appeal_lst = []
+            for (fish, pos) in self.neighbouring_fish:
+                rel_fish_pos = self.position - pos
+                distance2 = np.dot(rel_fish_pos, rel_fish_pos)
+                angle = mu.calculate_angle2D(rel_fish_pos, self.velocity)                
+                appeal = 1/(0.01 + distance2*angle)
+                fish_appeal_lst.append(appeal)
+            target_fish_index = mu.rws(fish_appeal_lst)
+            self.neighbouring_fish = [self.neighbouring_fish[target_fish_index]]
         # run sensor
         sensor_output = self.sensor.read_fish()
         
@@ -171,6 +181,9 @@ class Predator(object):
 
         angular_gain = 20
         self.angular_velocity = angular_gain*desired_rotation
+        max_angular_vel = np.pi/4
+        if abs(self.angular_velocity) > max_angular_vel:
+            self.angular_velocity = np.sign(self.angular_velocity) * max_angular_vel
 
        
     """

@@ -19,8 +19,8 @@ if __name__ == "__main__":
 
 
     # simulation settings
-    settings.k = 10**6
-    settings.power = 4
+    settings.k = 10**8
+    settings.power = 6
     settings.window_width = 800     # Also used as our simulation boundary
     settings.window_height = 600    # Also used as our simulation boundary
     settings.nbr_fishes = 40
@@ -75,9 +75,6 @@ if __name__ == "__main__":
             fish.advance(dt)
         for predator in environment.predator_lst:
             predator.advance(dt)
-
-        #for fish in fish_to_remove:
-            #environment.fish_lst.remove(fish)
 
         for predator in environment.predator_lst:
             predator.attack(dt)

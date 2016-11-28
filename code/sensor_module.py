@@ -55,7 +55,8 @@ class RetinaSensor(object):
         
     def find_cell(self, other_agent, pos):
         rel_pos_other_agent = pos - self.agent.position
-        angle = mu.directed_angle2D(rel_pos_other_agent, self.agent.velocity)
+        angle = mu.directed_angle2D(rel_pos_other_agent, self.agent.velocity)*0.99999
         tmp = math.floor(angle / self._cell_width)
         index = int(tmp + self._nbr_cells/2)
+
         return self._retina_cells[index]

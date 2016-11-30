@@ -144,6 +144,10 @@ class Predator(object):
         self.velocity = velocity
         self.speed = self.environment.settings.predator_speed
         self.environment = environment
+
+        self._cruising_speed = self.environment.settings.predator_speed * 0.1
+        self._hunting_speed = self.environment.settings.predator_speed
+        self.feeding_timer = 50
        
         # init virtual positions
         self.positions = self.environment.virtual_game_area.get_virtual_positions(self.position);
@@ -195,8 +199,14 @@ class Predator(object):
         action = self.fsm(sensor_output)
        """ 
     def advance(self, delta_time):
-        # hacked in so we get something moving/rotating
-        #self.velocity += ((np.random.rand(1,2)[0] * 2) - 1) * 0.01
+
+        if self.feeding_timer == 0:
+            self.environment.settings.predator_speed = self._hunting_speed
+        else:
+            self.feeding_timer -= 1
+            self.environment.settings.predator_speed = self._cruising_speed
+
+
         self.velocity = mu.normalize(self.velocity)
         max_rotation = np.pi/4
         rotation = self.angular_velocity*delta_time
@@ -204,7 +214,6 @@ class Predator(object):
             rotation = np.sign(rotation) * max_rotation
         self.velocity = mu.rotate_ccw(self.velocity, -rotation)
         self.position += self.velocity * self.environment.settings.predator_speed * delta_time
-        
         # Wrap around
         x_max = self.environment.boundaries[1]
         y_max = self.environment.boundaries[3]
@@ -221,8 +230,8 @@ class Predator(object):
     def attack(self, delta_time):
         
         r = np.random.rand()
-        feeding_frequency = self.environment.settings.predator_feeding_frequency
-        if r < delta_time * feeding_frequency:
+
+        if (r < delta_time) & (self.feeding_timer == 0):
             #Check for attackable fish
             self.attackable_fish = []
             for fish in self.environment.fish_lst:
@@ -231,6 +240,7 @@ class Predator(object):
                     self.attackable_fish.append(fish)
             nbr_attackable_fish = len(self.attackable_fish)
             if nbr_attackable_fish>0:
+                self.feeding_timer = 50
                 index_attack = np.random.randint(nbr_attackable_fish)
                 attacked_fish = self.attackable_fish[index_attack]
                 attacked_fish.is_alive = False

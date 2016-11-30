@@ -80,6 +80,7 @@ if __name__ == "__main__":
             predator.attack(dt)
 
         environment.remove_dead_fish()
+        environment.update_fish_grid()
     # event when rendering is requested
     @window.event
     def on_draw():

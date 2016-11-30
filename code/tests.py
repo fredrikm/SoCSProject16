@@ -99,11 +99,9 @@ class TestFishNeigbourhood(unittest.TestCase):
 
     def test_rejection(self):  # Test that fish outside neigbourhood radius is NOT detected
         environment = create_environment(3, 0, [0, 10, 0, 10], 2)
-        fishA = environment.fish_lst[0]
-        fishA.position = np.array([0, 0])
-        fishA.velocity = np.array([1, 0])
-        fishB = environment.fish_lst[1]
-        fishB.position = np.array([0, 2.01])
+        fishA = set_fish_position(environment, 0, np.array([0, 0]))
+        fishB = set_fish_position(environment, 0, np.array([0, 2.01]))
+
         fishA.think()
         self.assertFalse(is_fish_in_list(fishB, fishA.neighbouring_fish))
 

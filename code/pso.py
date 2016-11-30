@@ -18,9 +18,6 @@ class Pso:
         self.inertia_min = inertia_min
         self.beta = beta
 
-        self.particleBest = np.array(self.n_particles)
-        self.particleBestFitness = np.array(self.n_particles)
-
         self.swarm_best = np.zeros(self.n_variables)-1
         self.swarm_best_fitness = 2.0
 
@@ -30,9 +27,9 @@ class Pso:
             position = p.position
             fitness = self.function(position)
 
-            if fitness < p.particleBestFitness:
-                p.particleBest = p.position
-                p.particleBestFitness = fitness
+            if fitness < p.particle_best_fitness:
+                p.particle_best = p.position
+                p.particle_best_fitness = fitness
 
                 if fitness < self.swarm_best_fitness :
                     self.swarm_best = p.position

@@ -182,9 +182,9 @@ class Predator(object):
         else:
             desired_rotation = 0
 
-        angular_gain = 20
+        angular_gain = 15
         self.angular_velocity = angular_gain*desired_rotation
-        max_angular_vel = np.pi/4
+        max_angular_vel = np.pi/2
         if abs(self.angular_velocity) > max_angular_vel:
             self.angular_velocity = np.sign(self.angular_velocity) * max_angular_vel
 
@@ -225,7 +225,7 @@ class Predator(object):
             #Check for attackable fish
             self.attackable_fish = []
             for fish in self.environment.fish_lst:
-                (isa, pos)=mu.is_neighbour(self, fish, self.environment.settings.predator_attack_radius2)
+                (isa, pos)=mu.is_neighbour(self, fish, self.environment.settings.predator_attack_radius)
                 if isa == True:
                     self.attackable_fish.append(fish)
             nbr_attackable_fish = len(self.attackable_fish)

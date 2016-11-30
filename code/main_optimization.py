@@ -109,39 +109,41 @@ def main():
     # ann_settings
     size_spec = [8,4,1]
     # pso settings
-    nbr_generations = 1
-    number_of_particles = 1
+    nbr_generations = 200
+    number_of_particles = 20
+
     number_of_variables = calculate_chromosome_length(size_spec)
     c1 = 2
     c2 = 2
     inertia_max = 1.4
     inertia_min = 0.4
-    beta = 0.9999
+    beta = 0.99
     x_max = 2
     x_min = -2
     # simulation settings
     delta_t = 0.2
-    nbr_iterations = round(120 / delta_t)
+    nbr_iterations = round(80 / delta_t)
        
     # environment settings
     settings = ConfigurationSettings() 
        
+    # simulation settings
     settings.k = 10**6
-    settings.power = 4    
-    settings.window_width = 800     # Also used as our simulation boundary
-    settings.window_height = 600    # Also used as our simulation boundary
-    settings.nbr_fishes = 50
+    settings.power = 6
+    settings.window_width = 1024     # Also used as our simulation boundary
+    settings.window_height = 768    # Also used as our simulation boundary
+    settings.nbr_fishes = 40
     settings.nbr_predators = 1
+
     settings.fish_nbr_retina_cells = 4
-    settings.fish_neighbourhood_radius2 = 100**2
-    settings.fish_speed = 60 # units per second in direction of velocity
+    settings.fish_neighbourhood_radius2 = 90**2
+    settings.fish_speed = 45  # units per second in direction of velocity
 
     settings.predator_nbr_retina_cells = 20
-    settings.predator_attack_radius2 = 50**2
-
-    settings.predator_feeding_frequency = 5
-    settings.predator_neighbourhood_radius2 = 100**2
-    settings.predator_speed = 100
+    settings.predator_neighbourhood_radius2 = 250**2
+    settings.predator_attack_radius = 80 ** 2
+    settings.predator_speed = 110
+    settings.predator_feeding_frequency = 1.5
 
     evaluate = partial(evaluate_chromosome, size_spec = size_spec, environment_settings=settings, delta_t=delta_t, nbr_iterations=nbr_iterations)
 
@@ -159,10 +161,11 @@ def main():
             pso.update_velocities()
             pso.update_inertia()
 
-            if pso.swarm_best_fitness <= previous_best_fitness:
+            if pso.swarm_best_fitness < previous_best_fitness:
                 previous_best_fitness = pso.swarm_best_fitness
-                print("saving...")
-                print("fitness: "+str(previous_best_fitness))
+                print("New best fitness: "+str(previous_best_fitness))
+                print("For weights: "+str(pso.swarm_best))
+            print("saving...")
             np.append(fitnesses, previous_best_fitness)
             save_path = '../best_network/'
             results_to_file(pso.swarm_best, size_spec, save_path, i, run_hash)

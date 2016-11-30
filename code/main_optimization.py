@@ -69,7 +69,6 @@ def evaluate_weights(ann_weights, environment_settings , delta_t, nbr_iterations
             fish.advance(delta_t)
         for predator in environment.predator_lst:
             predator.advance(delta_t)
-
         for predator in environment.predator_lst:
             predator.attack(delta_t)
         environment.remove_dead_fish()
@@ -139,9 +138,9 @@ def main():
     settings.fish_speed = 60 # units per second in direction of velocity
 
     settings.predator_nbr_retina_cells = 20
-    settings.predator_attack_radius2 = 50**2
+    settings.predator_attack_radius = 50**2
 
-    settings.predator_feeding_frequency = 5
+    settings.predator_feeding_frequency = 1
     settings.predator_neighbourhood_radius2 = 100**2
     settings.predator_speed = 100
 

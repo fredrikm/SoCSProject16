@@ -18,7 +18,6 @@ from pso import Pso
 from environment_module import Environment, ConfigurationSettings
 
 
-
 def encode_weights(ann_weights):
     weights_tmp = deepcopy(ann_weights)
     chromosome = []
@@ -69,7 +68,6 @@ def evaluate_weights(ann_weights, environment_settings , delta_t, nbr_iterations
             fish.advance(delta_t)
         for predator in environment.predator_lst:
             predator.advance(delta_t)
-
         for predator in environment.predator_lst:
             predator.attack(delta_t)
         environment.remove_dead_fish()
@@ -162,8 +160,9 @@ def main():
             pso.update_inertia()
 
             if pso.swarm_best_fitness <= previous_best_fitness:
-                print("saving...")
                 previous_best_fitness = pso.swarm_best_fitness
+                print("saving...")
+                print("fitness: "+str(previous_best_fitness))
             np.append(fitnesses, previous_best_fitness)
             save_path = '../best_network/'
             results_to_file(pso.swarm_best, size_spec, save_path, i, run_hash)

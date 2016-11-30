@@ -36,7 +36,7 @@ class Pso:
 
                 if fitness < self.swarm_best_fitness :
                     self.swarm_best = p.position
-                    self.swam_best_fitness = fitness
+                    self.swarm_best_fitness = fitness
 
     def update_velocities(self):
         for p in self.particles:

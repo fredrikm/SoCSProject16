@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     settings.fish_nbr_retina_cells = 4
     settings.fish_neighbourhood_radius2 = 100**2
-    settings.predator_attack_radius = 50 ** 2
+    settings.predator_attack_radius2 = 50 ** 2
     settings.fish_speed = 60 # units per second in direction of velocity
 
     settings.predator_nbr_retina_cells = 20

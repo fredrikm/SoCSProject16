@@ -225,7 +225,7 @@ class Predator(object):
             #Check for attackable fish
             self.attackable_fish = []
             for fish in self.environment.fish_lst:
-                (isa, pos)=mu.is_neighbour(self, fish, self.environment.settings.predator_attack_radius)
+                (isa, pos)=mu.is_neighbour(self, fish, self.environment.settings.predator_attack_radius2)
                 if isa == True:
                     self.attackable_fish.append(fish)
             nbr_attackable_fish = len(self.attackable_fish)

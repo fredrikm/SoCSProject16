@@ -16,6 +16,7 @@ class Particle:
 
         self.v_max = x_max-x_min
         self.particleBest = self.position
+        self.particleBestFitness = np.inf
 
     def update_velocity(self, inertia, swarmBest, C1, C2):
         q = np.random.rand()

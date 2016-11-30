@@ -123,27 +123,28 @@ def main():
     x_min = -2
     # simulation settings
     delta_t = 0.2
-    nbr_iterations = round(120 / delta_t)
+    nbr_iterations = round(80 / delta_t)
        
     # environment settings
     settings = ConfigurationSettings() 
        
+    # simulation settings
     settings.k = 10**6
-    settings.power = 4    
-    settings.window_width = 800     # Also used as our simulation boundary
-    settings.window_height = 600    # Also used as our simulation boundary
-    settings.nbr_fishes = 50
+    settings.power = 6
+    settings.window_width = 1024     # Also used as our simulation boundary
+    settings.window_height = 768    # Also used as our simulation boundary
+    settings.nbr_fishes = 40
     settings.nbr_predators = 1
+
     settings.fish_nbr_retina_cells = 4
-    settings.fish_neighbourhood_radius2 = 100**2
-    settings.fish_speed = 60 # units per second in direction of velocity
+    settings.fish_neighbourhood_radius2 = 90**2
+    settings.fish_speed = 45  # units per second in direction of velocity
 
     settings.predator_nbr_retina_cells = 20
-    settings.predator_attack_radius = 50**2
-
-    settings.predator_feeding_frequency = 1
-    settings.predator_neighbourhood_radius2 = 100**2
-    settings.predator_speed = 100
+    settings.predator_neighbourhood_radius2 = 250**2
+    settings.predator_attack_radius = 80 ** 2
+    settings.predator_speed = 110
+    settings.predator_feeding_frequency = 1.5
 
     evaluate = partial(evaluate_chromosome, size_spec = size_spec, environment_settings=settings, delta_t=delta_t, nbr_iterations=nbr_iterations)
 

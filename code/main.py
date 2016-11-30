@@ -9,6 +9,7 @@ import numpy as np
 import pyglet
 
 from environment_module import Environment, ConfigurationSettings
+from main_optimization import results_from_file, decode_chromosome
 
 # Entrypoint for presentation
 if __name__ == "__main__":
@@ -27,7 +28,7 @@ if __name__ == "__main__":
     settings.nbr_predators = 1
 
     settings.fish_nbr_retina_cells = 4
-    settings.fish_neighbourhood_radius2 = 90**2
+    settings.fish_neighbourhood_radius2 = 150**2
     settings.fish_speed = 45  # units per second in direction of velocity
 
     settings.predator_nbr_retina_cells = 20
@@ -50,7 +51,10 @@ if __name__ == "__main__":
 
     fps_display = pyglet.clock.ClockDisplay()
 
-    ann_weights = [np.ones([4,8]), np.ones([1,4])]
+    # Load results
+    (chromosome, size_spec) = results_from_file('./network/_chromosome_', './network/_size_spec_')
+    ann_weights = decode_chromosome(chromosome, size_spec)
+    #ann_weights = [np.ones([4,8]), np.ones([1,4])]
 
     # Instantiate our simulation environment
     environment = Environment(settings, ann_weights)
@@ -92,7 +96,7 @@ if __name__ == "__main__":
 
             fps_display.draw()
 
-    pyglet.clock.schedule_interval(update, 1/120.0)
+    pyglet.clock.schedule_interval(update, 1/30.0)
     pyglet.app.run()    
     
   

@@ -60,6 +60,8 @@ def evaluate_weights(ann_weights, environment_settings , delta_t, nbr_iterations
     # Run simulation
     t = time.time()
 
+    predator_wait_time = 4 / delta_t; # 4 seconds before we let predator start feeding
+
     for i in range(nbr_iterations):
         for fish in environment.fish_lst:
             fish.think()
@@ -69,9 +71,11 @@ def evaluate_weights(ann_weights, environment_settings , delta_t, nbr_iterations
             fish.advance(delta_t)
         for predator in environment.predator_lst:
             predator.advance(delta_t)
-        for predator in environment.predator_lst:
-            predator.attack(delta_t)
+        if predator_wait_time < 0:
+            for predator in environment.predator_lst:
+                predator.attack(delta_t)
         environment.remove_dead_fish()
+        predator_wait_time -= 1
     print('Elapsed time (seconds): '+str(time.time()-t))
     # Calculate fitness score
     surviving_fish = len(environment.fish_lst)
@@ -122,7 +126,7 @@ def main():
     x_max = 2
     x_min = -2
     # simulation settings
-    delta_t = 0.2
+    delta_t = 1/20.0 #0.2
     nbr_iterations = round(80 / delta_t)
        
     # environment settings
@@ -137,7 +141,7 @@ def main():
     settings.nbr_predators = 1
 
     settings.fish_nbr_retina_cells = 4
-    settings.fish_neighbourhood_radius2 = 90**2
+    settings.fish_neighbourhood_radius2 = 150**2
     settings.fish_speed = 45  # units per second in direction of velocity
 
     settings.predator_nbr_retina_cells = 20

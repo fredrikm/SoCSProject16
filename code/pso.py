@@ -20,7 +20,7 @@ class Pso:
 
         self.particleBest = np.array(self.n_particles)
         self.swarm_best = np.zeros(self.n_variables)-1
-        self.swarm_best_fitness = 10
+        self.swarm_best_fitness = 2.0
 
     def evaluate_all_particles(self):
 

@@ -127,8 +127,9 @@ class Fish(object):
 
     def advance(self, delta_time):
 
-         # Update velocity and position
-        #self.velocity = mu.rotate_ccw(self.velocity, - self.angular_velocity * delta_time)
+        # Update velocity
+        turning_speed = 3;
+        self.velocity = mu.rotate_ccw(self.velocity, - self.angular_velocity * delta_time * turning_speed)
 
         force = self.calculate_fish_forces()
         self.velocity = mu.normalize(self.velocity) * self.speed + force / self.mass
@@ -199,9 +200,9 @@ class Predator(object):
         else:
             desired_rotation = 0
 
-        angular_gain = 20
+        angular_gain = 15
         self.angular_velocity = angular_gain*desired_rotation
-        max_angular_vel = np.pi/4
+        max_angular_vel = np.pi/2
         if abs(self.angular_velocity) > max_angular_vel:
             self.angular_velocity = np.sign(self.angular_velocity) * max_angular_vel
 

@@ -102,7 +102,10 @@ class Environment(object):
 
         for fish in self.fish_lst:
             if not fish.is_alive:
-                fish.sprite.image = self.dead_fish_image
+
+                if self.settings.graphics_on:
+                    fish.sprite.image = self.dead_fish_image
+
                 self.fish_lst.remove(fish)
     
     def instantiate_fish_grid(self):

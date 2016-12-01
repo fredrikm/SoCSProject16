@@ -37,6 +37,8 @@ if __name__ == "__main__":
     settings.predator_speed = 110
     settings.predator_feeding_frequency = 1.5
 
+    settings.predator_wait_attack_time = 0;
+
     # graphic settings
     settings.graphics_on = True
     settings.fish_sprite_scale = 0.25
@@ -80,9 +82,11 @@ if __name__ == "__main__":
         for predator in environment.predator_lst:
             predator.advance(dt)
 
-        for predator in environment.predator_lst:
-            predator.attack(dt)
-
+        if environment.settings.predator_wait_attack_time < 0:
+            for predator in environment.predator_lst:
+                predator.attack(dt)
+        
+        environment.settings.predator_wait_attack_time -= dt
         environment.remove_dead_fish()
     # event when rendering is requested
     @window.event

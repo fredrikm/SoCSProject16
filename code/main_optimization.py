@@ -60,7 +60,7 @@ def evaluate_weights(ann_weights, environment_settings , delta_t, nbr_iterations
     # Run simulation
     t = time.time()
 
-    predator_wait_time = 4 / delta_t; # 4 seconds before we let predator start feeding
+    predator_wait_time = 20 / delta_t; # seconds before we let predator start feeding
 
     for i in range(nbr_iterations):
         for fish in environment.fish_lst:
@@ -126,8 +126,8 @@ def main():
     x_max = 2
     x_min = -2
     # simulation settings
-    delta_t = 1/20.0 #0.2
-    nbr_iterations = round(80 / delta_t)
+    delta_t = 1/10.0 #0.2
+    nbr_iterations = round(100 / delta_t)
        
     # environment settings
     settings = ConfigurationSettings() 
@@ -155,6 +155,11 @@ def main():
     
     #instantiate pso
     pso = Pso(evaluate, number_of_particles, number_of_variables, c1, c2, inertia_max, inertia_min, beta, x_max, x_min)
+
+    # seed one particle
+    (seed_chromosome, seed_size_spec) = results_from_file('./network/_chromosome_', './network/_size_spec_')
+    pso.particles[0].position = seed_chromosome
+    
     # run pso
     previous_best_fitness = np.inf
     fitnesses = np.zeros(nbr_generations)

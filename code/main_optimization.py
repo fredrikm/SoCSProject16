@@ -53,7 +53,7 @@ def calculate_chromosome_length(ann_size_spec):
             chromosome_length += nbr_matrix_elements
     return chromosome_length
 
-def evaluate_weights(ann_weights, environment_settings , delta_t, nbr_iterations):
+def evaluate_weights(ann_weights, environment_settings, delta_t, nbr_iterations):
     # ann_weights is a list of matrices  ann_weights = [matrix_layer1, matrix_layer2,...]  
     # Instantiate our simulation environment
     environment = Environment(environment_settings, ann_weights)
@@ -87,6 +87,14 @@ def evaluate_weights(ann_weights, environment_settings , delta_t, nbr_iterations
 def evaluate_chromosome(chromosome, size_spec, environment_settings, delta_t, nbr_iterations):
     ann_weights = decode_chromosome(chromosome, size_spec)
     return evaluate_weights(ann_weights, environment_settings , delta_t, nbr_iterations)
+
+def evaluate_chromosome_averaging(chromosome, size_spec, environment_settings, delta_t, nbr_iterations, nbr_evaluations):
+    # Average several evaluations to get amore robust fitness score
+    print("------ Starting evaluation of new chromosome -------")
+    results = [evaluate_chromosome(chromosome, size_spec, environment_settings, delta_t, nbr_iterations) for i in range(nbr_evaluations)]
+    average_rel_mortality = np.mean(results)
+    print('Evaluation finished, average rel_mortality: ' + str(average_rel_mortality))
+    return average_rel_mortality
 
 
 def results_to_file(chromosome, size_spec, save_path, iteration, run_number):
@@ -125,14 +133,15 @@ def main():
     beta = 0.99
     x_max = 2
     x_min = -2
+    
+    
     # simulation settings
     delta_t = 1/20.0 #0.2
     nbr_iterations = round(80 / delta_t)
+    evaluations_per_chromosome = 3
        
     # environment settings
     settings = ConfigurationSettings() 
-       
-    # simulation settings
     settings.k = 10**6
     settings.power = 6
     settings.window_width = 1024     # Also used as our simulation boundary
@@ -150,7 +159,10 @@ def main():
     settings.predator_speed = 110
     settings.predator_feeding_frequency = 1.5
 
-    evaluate = partial(evaluate_chromosome, size_spec = size_spec, environment_settings=settings, delta_t=delta_t, nbr_iterations=nbr_iterations)
+    evaluate = partial(evaluate_chromosome_averaging, size_spec = size_spec, 
+                       environment_settings=settings, delta_t=delta_t, 
+                       nbr_iterations=nbr_iterations,
+                       nbr_evaluations=evaluations_per_chromosome)
 
     
     #instantiate pso

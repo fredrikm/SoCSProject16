@@ -73,10 +73,13 @@ class Environment(object):
         # Initialize fishes
         self.fish_lst = []
         for i in range(self.settings.nbr_fishes):
-            pos = np.array([np.random.random() * self.boundaries[1], np.random.random() * self.boundaries[1]])
+            #pos = np.array([np.random.random() * self.boundaries[1], np.random.random() * self.boundaries[1]])
             #pos = np.array([np.random.random()* 0.001 + 0.5 * self.boundaries[1], np.random.random()* 0.001 + 0.5 * self.boundaries[1]])
             
-            velocity = mu.normalize(np.array([random.randint(-100,100), random.randint(-100,100)]))
+            #velocity = mu.normalize(np.array([random.randint(-100,100), random.randint(-100,100)]))
+
+            pos = np.array([np.random.random() * self.boundaries[1], np.random.random() * self.boundaries[3]])
+            velocity = mu.normalize(np.array([self.boundaries[1] * 0.5, self.boundaries[3] * 0.5]) - pos)
 
             fish = Fish(pos, velocity, i, self, ann, fish_image, self.sprite_batch_fishes)
             self.fish_lst.append(fish)

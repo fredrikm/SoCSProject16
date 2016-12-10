@@ -112,7 +112,7 @@ class Fish(object):
 
         # Update velocity
         turning_speed = 3;
-        self.velocity = mu.rotate_ccw(self.velocity, - self.angular_velocity * delta_time * turning_speed)
+        #self.velocity = mu.rotate_ccw(self.velocity, - self.angular_velocity * delta_time * turning_speed)
 
         force = self.calculate_fish_forces()
         self.velocity = mu.normalize(self.velocity) * self.speed + force / self.mass

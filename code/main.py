@@ -7,6 +7,7 @@ Created on Wed Nov 16 15:35:18 2016
 
 import numpy as np
 import pyglet
+from pyglet.window import key
 
 from environment_module import Environment, ConfigurationSettings
 from main_optimization import results_from_file, decode_chromosome
@@ -25,7 +26,7 @@ if __name__ == "__main__":
     settings.window_width = 1024     # Also used as our simulation boundary
     settings.window_height = 768    # Also used as our simulation boundary
     settings.nbr_fishes = 40
-    settings.nbr_predators = 1
+    settings.nbr_predators = 0
 
     settings.fish_nbr_retina_cells = 4
     settings.fish_neighbourhood_radius2 = 150**2
@@ -54,7 +55,10 @@ if __name__ == "__main__":
     # Load results
     (chromosome, size_spec) = results_from_file('./network/_chromosome_', './network/_size_spec_')
     ann_weights = decode_chromosome(chromosome, size_spec)
+
     #ann_weights = [np.ones([4,8]), np.ones([1,4])]
+    #ann_weights = [(np.random.rand(4,8) - 0.5)*2, (np.random.rand(1,4) - 0.5)*2]
+       
 
     # Instantiate our simulation environment
     environment = Environment(settings, ann_weights)
@@ -66,12 +70,6 @@ if __name__ == "__main__":
 
         for fish in environment.fish_lst:
             fish.think()
-            
-            # demonstrate sensor functionality
-            #if environment.settings.graphics_on:
-                #if sum(fish.sensor.read_predators()) != 0 and fish.sprite.image != environment.dead_fish_image:
-                    #fish.sprite.image = environment.dead_fish_image
-                    #fish_to_remove.append(fish)
                         
         for predator in environment.predator_lst:
             predator.think()
@@ -94,7 +92,16 @@ if __name__ == "__main__":
             environment.sprite_batch_fishes.draw()
             environment.sprite_batch_predators.draw()
 
-            fps_display.draw()
+            #fps_display.draw()
+
+    @window.event
+    def on_key_press(symbol, modifiers):
+        if symbol == key.A and environment.settings.nbr_predators == 0:
+            print('Activating predator')
+            environment.settings.nbr_predators = 1
+            environment.spawn_predator()
+
+        
 
     pyglet.clock.schedule_interval(update, 1/30.0)
     pyglet.app.run()    

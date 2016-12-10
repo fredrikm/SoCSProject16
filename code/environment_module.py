@@ -55,10 +55,10 @@ class Environment(object):
         if self.settings.graphics_on:
             # sprites
             fish_image = pyglet.resource.image("orange_fish.png")
-            predator_image = pyglet.resource.image("shark.jpg")
+            self.predator_image = pyglet.resource.image("shark.jpg")
             self.dead_fish_image = pyglet.resource.image("dead_fish.png")
             self.center_image(fish_image)
-            self.center_image(predator_image)
+            self.center_image(self.predator_image)
             self.center_image(self.dead_fish_image)
             # sprite batches for performance
             self.sprite_batch_fishes = pyglet.graphics.Batch()
@@ -67,7 +67,7 @@ class Environment(object):
         else:
             fish_image = None
             self.sprite_batch_fishes = None
-            predator_image = None
+            self.predator_image = None
             self.sprite_batch_predators = None
         
         # Initialize fishes
@@ -85,11 +85,17 @@ class Environment(object):
         # Initialize predators
         position = np.array([200.0,200.0])
         velocity = np.array([0.1,0.1])
-        self.predator_lst = [Predator(position, velocity, i, self, predator_image, self.sprite_batch_predators) for i in range(self.settings.nbr_predators)]
+        self.predator_lst = [Predator(position, velocity, i, self, self.predator_image, self.sprite_batch_predators) for i in range(self.settings.nbr_predators)]
                
     
     def __str__(self):
         return "Environment object"
+
+    def spawn_predator(self):
+        position = np.array([200.0,200.0])
+        velocity = np.array([0.1,0.1])
+        self.predator_lst = [Predator(position, velocity, i, self, self.predator_image, self.sprite_batch_predators) for i in range(self.settings.nbr_predators)]
+
 
     # centers an image so it's rotation is around it's center
     def center_image(self, image):

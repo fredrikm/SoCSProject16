@@ -131,8 +131,8 @@ def main():
     inertia_max = 1.4
     inertia_min = 0.4
     beta = 0.99
-    x_max = 2
-    x_min = -2
+    x_max = 6
+    x_min = -6
     
     
     # simulation settings

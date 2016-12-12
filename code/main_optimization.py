@@ -75,6 +75,7 @@ def evaluate_weights(ann_weights, environment_settings, delta_t, nbr_iterations)
             for predator in environment.predator_lst:
                 predator.attack(delta_t)
         environment.remove_dead_fish()
+        environment.update_fish_grid()
         predator_wait_time -= 1
     print('Elapsed time (seconds): '+str(time.time()-t))
     # Calculate fitness score
@@ -150,6 +151,7 @@ def main():
     settings.nbr_predators = 1
 
     settings.fish_nbr_retina_cells = 4
+
     settings.fish_neighbourhood_radius2 = 150**2
     settings.fish_speed = 45  # units per second in direction of velocity
 

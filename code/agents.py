@@ -76,8 +76,25 @@ class Fish(object):
         return f
 
     def find_neighbours(self):
+        # Limit checks to adjecent grid cells
+        (i,j) = self.grid_indices
+        tmp_fish_lst = self.environment.fish_grid[i][j]
+        # East
+        try:
+            tmp_fish_lst.extend(self.environment.fish_grid[i+1][j])
+        except IndexError:
+            tmp_fish_lst.extend(self.environment.fish_grid[0][j])
+        # West
+        tmp_fish_lst.extend(self.environment.fish_grid[i-1][j])
+        # North
+        try:
+            tmp_fish_lst.extend(self.environment.fish_grid[i][j+1])
+        except IndexError:
+            tmp_fish_lst.extend(self.environment.fish_grid[i][0])
+        # South
+        tmp_fish_lst.extend(self.environment.fish_grid[0][j-1])
         neighbours = []
-        for fish in self.environment.fish_lst:
+        for fish in tmp_fish_lst:
             (isa, pos) = mu.is_neighbour(self, fish, self.environment.settings.fish_neighbourhood_radius2)
             if isa == True:
                 neighbours.append((fish, pos))
@@ -94,7 +111,7 @@ class Fish(object):
         return neighbours
 
     def think(self): # Can NOT change global system state, nor the pos./vel. of self       
-
+        # check surroundings
         self.neighbouring_fish = self.find_neighbours()
         self.neighbouring_predators = self.find_hostile_neighbors()
 

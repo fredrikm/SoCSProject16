@@ -50,6 +50,7 @@ class Environment(object):
 
         self.virtual_game_area = VirtualGameArea(self.settings.window_width, self.settings.window_height)
 
+
         #fsm = Predator_FSM(self)
 
         if self.settings.graphics_on:
@@ -73,15 +74,16 @@ class Environment(object):
         # Initialize fishes
         self.fish_lst = []
         for i in range(self.settings.nbr_fishes):
-            pos = np.array([np.random.random() * self.boundaries[1], np.random.random() * self.boundaries[1]])
+            pos = np.array([np.random.random() * self.boundaries[1], np.random.random() * self.boundaries[3]])
             #pos = np.array([np.random.random()* 0.001 + 0.5 * self.boundaries[1], np.random.random()* 0.001 + 0.5 * self.boundaries[1]])
             
             velocity = mu.normalize(np.array([random.randint(-100,100), random.randint(-100,100)]))
 
             fish = Fish(pos, velocity, i, self, ann, fish_image, self.sprite_batch_fishes)
             self.fish_lst.append(fish)
-
-
+        # Grid for quick neighbour search
+        self.instantiate_fish_grid()
+        self.update_fish_grid()
         # Initialize predators
         position = np.array([200.0,200.0])
         velocity = np.array([0.1,0.1])
@@ -105,3 +107,21 @@ class Environment(object):
                     fish.sprite.image = self.dead_fish_image
 
                 self.fish_lst.remove(fish)
+    
+    def instantiate_fish_grid(self):
+        min_side_length = 2/3*np.sqrt(self.settings.fish_neighbourhood_radius2)
+        self.nbr_grid_cells_x = int(np.floor(self.settings.window_width/min_side_length))
+        self.nbr_grid_cells_y = int(np.floor(self.settings.window_height/min_side_length))
+        self.fish_grid_cell_width = self.settings.window_width/self.nbr_grid_cells_x
+        self.fish_grid_cell_height = self.settings.window_height/self.nbr_grid_cells_y
+        self.fish_grid = [[[] for i in range(self.nbr_grid_cells_y)] for j in range(self.nbr_grid_cells_x)]
+    
+    def update_fish_grid(self):
+        self.fish_grid = [[[] for i in range(self.nbr_grid_cells_y)] for j in range(self.nbr_grid_cells_x)]
+        for fish in self.fish_lst:
+            x = fish.position[0]
+            y = fish.position[1]
+            i = int(np.floor(x / self.fish_grid_cell_width))
+            j = int(np.floor(y / self.fish_grid_cell_height))
+            fish.grid_indices = (i,j)
+            self.fish_grid[i][j].append(fish)

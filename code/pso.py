@@ -22,10 +22,12 @@ class Pso:
         self.swarm_best_fitness = 2.0
 
     def evaluate_all_particles(self):
-
+        
+        self.fitness_lst = [];
         for p in self.particles:
             position = p.position
             fitness = self.function(position)
+            self.fitness_lst.append(fitness)
 
             if fitness < p.particle_best_fitness:
                 p.particle_best = p.position

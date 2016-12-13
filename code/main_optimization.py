@@ -122,7 +122,7 @@ def main():
     # ann_settings
     size_spec = [8,4,1]
     # pso settings
-    nbr_generations = 200
+    nbr_generations = 100
     number_of_particles = 20
 
     number_of_variables = calculate_chromosome_length(size_spec)
@@ -131,8 +131,8 @@ def main():
     inertia_max = 1.4
     inertia_min = 0.4
     beta = 0.99
-    x_max = 2
-    x_min = -2
+    x_max = 4
+    x_min = -4
     
     
     # simulation settings
@@ -186,6 +186,12 @@ def main():
             np.append(fitnesses, previous_best_fitness)
             save_path = '../best_network/'
             results_to_file(pso.swarm_best, size_spec, save_path, i, run_hash)
+            save_path = '../best_network' + str(run_hash) + '/raw_fitness_evo.txt'
+            with open(save_path, 'a') as outfile:
+                print(",".join([str(x) for x in pso.fitness_lst]),file=outfile)
+            
+                
+                
     
     print("------ RESULTS -------")
     print("Best network")

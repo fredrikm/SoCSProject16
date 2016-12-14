@@ -128,11 +128,11 @@ def main():
     number_of_variables = calculate_chromosome_length(size_spec)
     c1 = 2
     c2 = 2
-    inertia_max = 1.4
+    inertia_max = 1.1
     inertia_min = 0.4
     beta = 0.99
-    x_max = 4
-    x_min = -4
+    x_max = 8
+    x_min = -8
     
     
     # simulation settings

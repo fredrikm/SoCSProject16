@@ -133,11 +133,10 @@ def main():
     beta = 0.99
     x_max = 4
     x_min = -4
-
     
     
     # simulation settings
-    delta_t = 1/10.0 #0.2
+    delta_t = 1/20.0 #0.2
     nbr_iterations = round(80 / delta_t)
     evaluations_per_chromosome = 3
        

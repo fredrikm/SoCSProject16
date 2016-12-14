@@ -1,6 +1,7 @@
 import numpy as np
 import particle
 import unittest
+from multiprocessing import Pool
 
 class Pso:
     def __init__(self, function, number_of_particles, number_of_variables, c1, c2, inertia_max, inertia_min, beta, x_max, x_min):
@@ -21,19 +22,20 @@ class Pso:
         self.swarm_best = np.zeros(self.n_variables)-1
         self.swarm_best_fitness = 2.0
 
-    def evaluate_all_particles(self):
-        
-        self.fitness_lst = [];
-        for p in self.particles:
-            position = p.position
-            fitness = self.function(position)
-            self.fitness_lst.append(fitness)
 
+
+    def evaluate_all_particles(self):
+
+        pool = Pool(processes=4)
+        argument_tuples= [(self.function, p) for p in self.particles]
+        self.fitness_lst = pool.map(evaluate_util, argument_tuples)
+        
+        for i,p in enumerate(self.particles):
+            fitness = self.fitness_lst[i]
             if fitness < p.particle_best_fitness:
                 p.particle_best = p.position
                 p.particle_best_fitness = fitness
-
-                if fitness < self.swarm_best_fitness :
+                if fitness < self.swarm_best_fitness:
                     self.swarm_best = p.position
                     self.swarm_best_fitness = fitness
 
@@ -54,6 +56,11 @@ class Pso:
         self.update_positions()
         self.update_velocities()
         self.update_inertia()
+
+def evaluate_util(function_particle):
+    function, particle = function_particle
+    return function(particle.position)
+
 
 class TestPsoAlgorithm(unittest.TestCase):
 

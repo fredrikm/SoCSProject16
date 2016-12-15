@@ -138,7 +138,7 @@ def main():
     # simulation settings
     delta_t = 1/20.0 #0.2
     nbr_iterations = round(80 / delta_t)
-    evaluations_per_chromosome = 3
+    evaluations_per_chromosome = 5
        
     # environment settings
     settings = ConfigurationSettings() 

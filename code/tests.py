@@ -1,7 +1,5 @@
-"""
-Created on Sun Nov 20 11:03:48 2016
-@author: Rasmus
-"""
+# -*- coding: utf-8 -*-
+
 import numpy as np
 import unittest
 

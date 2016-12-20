@@ -3,9 +3,9 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{87da35c5-cf5e-47bf-89c1-dda33d6afde2}</ProjectGuid>
+    <ProjectGuid>{5ee6a56b-bf03-458f-9342-07114590c4c2}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>main.py</StartupFile>
+    <StartupFile>main_optimization.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -30,6 +30,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="neural_network.py" />
+    <Compile Include="particle.py" />
     <Compile Include="pso.py" />
     <Compile Include="sensor_module.py" />
     <Compile Include="tests.py" />

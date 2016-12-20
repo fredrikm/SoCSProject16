@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 22 19:48:08 2016
-
-@author: Rasmus
-"""
 
 from copy import deepcopy
 from functools import partial
@@ -14,7 +9,6 @@ import random
 import time
 
 from pso import Pso
-
 from environment_module import Environment, ConfigurationSettings
 
 

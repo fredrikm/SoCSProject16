@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Nov 16 12:36:08 2016
 
-@author: Rasmus
-"""
 import pyglet
 import numpy as np
 import math
@@ -11,35 +7,6 @@ from copy import deepcopy
 
 import math_utility_module as mu
 from sensor_module import RetinaSensor
-""" Interface for fish
-
---- Variables ---
-velocity (np.array)
-position (np.array)
-fish_id (integer)
-environment (Environment)
-
---- Methods ---
-think()       Can NOT change global system state
-frame_advance(delta_time):
-
-"""
-
-
-""" Interface for predator
-
---- Variables ---
-velocity (np.array)
-position (np.array)
-predator_id (integer)
-environment (Environment)
-
---- Methods ---
-think()       Can NOT change global system state
-advance(delta_time):
-
-"""
-
     
 class Fish(object):
     def  __init__(self, position, velocity, fish_id, environment, ann, image = None, sprite_batch = None):

@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Nov 16 15:35:18 2016
-
-@author: Rasmus
-"""
 
 import numpy as np
 import pyglet
@@ -66,12 +61,6 @@ if __name__ == "__main__":
 
         for fish in environment.fish_lst:
             fish.think()
-            
-            # demonstrate sensor functionality
-            #if environment.settings.graphics_on:
-                #if sum(fish.sensor.read_predators()) != 0 and fish.sprite.image != environment.dead_fish_image:
-                    #fish.sprite.image = environment.dead_fish_image
-                    #fish_to_remove.append(fish)
                         
         for predator in environment.predator_lst:
             predator.think()
@@ -84,6 +73,7 @@ if __name__ == "__main__":
             predator.attack(dt)
 
         environment.remove_dead_fish()
+
     # event when rendering is requested
     @window.event
     def on_draw():

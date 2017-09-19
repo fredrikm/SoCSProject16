@@ -18,7 +18,7 @@ https://www.youtube.com/watch?v=OSK-ddcv1RQ
 https://www.youtube.com/watch?v=2iXlviY9nm4  
 
 The report can be found here:  
-Add link  
+https://drive.google.com/open?id=0B2e0T66f3yUxVi1Wa1ktQjlIcFE  
 
 And a google slides document here:  
 https://drive.google.com/open?id=1heJ2wQqCGGZwdAoMBYE1RpFRukJ20Bsynl7VwNxYW8c  
@@ -37,8 +37,8 @@ Run main_optimization.py to train a new network using PSO.
 
 ## Credits
 
-Rasmus ≈kerlund  
-Fredrik M‰kel‰inen  
+Rasmus √Ökerlund  
+Fredrik M√§kel√§inen  
 Jacob Steffenburg  
 Alexander Reinthal  
 

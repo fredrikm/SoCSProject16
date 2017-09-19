@@ -73,14 +73,24 @@ class Fish(object):
         ann_output = self.ann.feed_forward(ann_input)
  
         # set angular velocity in interval [-pi/2,pi/2] based on ann-output
-        self.angular_velocity = float(ann_output)*np.pi/2
-
+        self.angular_velocity = float(ann_output[0])*np.pi/2
+        
+        # set accelaration based on ann-output
+        try:
+            acc = float(ann_output[1])*10 # Helping network to get in working regime
+            self.acceleration = np.sign(acc) * min([np.abs(acc), 18]) # Limit acc. to 2g
+        except IndexError:
+            self.acceleration = 0
+        
+        
     def advance(self, delta_time):
 
         # Update velocity
         turning_speed = 3;
         self.velocity = mu.rotate_ccw(self.velocity, - self.angular_velocity * delta_time * turning_speed)
-
+        self.speed = self.speed + self.acceleration*delta_time
+        self.speed = min([self.speed, self.environment.settings.fish_speed])
+        self.speed = max([self.speed, 0.2*self.environment.settings.fish_speed]) # fish cannot stop completely
         force = self.calculate_fish_forces()
         self.velocity = mu.normalize(self.velocity) * self.speed + force / self.mass
 
